@@ -25,10 +25,9 @@ class _LoadingPageState extends State<LoadingPage> {
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
-              stops: const [0.5, 1],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.pink.shade200, Colors.white])),
+              colors: [Colors.pink.shade100, Colors.pink.shade200])),
       child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(child: CircularProgressIndicator(color: Colors.white)),
