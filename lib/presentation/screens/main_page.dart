@@ -1,4 +1,8 @@
+import 'package:cakeshopapp/presentation/providers/main_page_provider.dart';
+import 'package:cakeshopapp/presentation/screens/cliente_page.dart';
+import 'package:cakeshopapp/presentation/screens/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -18,10 +22,59 @@ class _MainPageState extends State<MainPage> {
               colors: [Colors.pink.shade100, Colors.pink.shade200])),
       child: const Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(
-          child: Text("Main Page"),
-        ),
+        body: _Pages(),
+        bottomNavigationBar: _Navigator(),
       ),
     );
+  }
+}
+
+class _Pages extends StatefulWidget {
+  const _Pages({Key? key}) : super(key: key);
+
+  @override
+  State<_Pages> createState() => __PagesState();
+}
+
+class __PagesState extends State<_Pages> {
+  List items = [HomePage(), ClientPage()];
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: context.read<MainPageProvider>().pageController,
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        return items[index];
+      },
+    );
+  }
+}
+
+class _Navigator extends StatefulWidget {
+  const _Navigator({Key? key}) : super(key: key);
+
+  @override
+  State<_Navigator> createState() => __NavigatorState();
+}
+
+class __NavigatorState extends State<_Navigator> {
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.read<MainPageProvider>();
+    return BottomNavigationBar(
+        backgroundColor: Colors.black,
+        unselectedItemColor: Colors.white,
+        currentIndex:
+            context.select((MainPageProvider value) => value.currentPage),
+        onTap: (i) {
+          provider.currentPage = i;
+        },
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Inicio",
+              backgroundColor: Colors.white),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: "Clientes")
+        ]);
   }
 }
