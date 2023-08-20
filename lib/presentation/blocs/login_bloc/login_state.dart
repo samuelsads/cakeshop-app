@@ -1,6 +1,16 @@
 part of 'login_bloc.dart';
 
-enum LoginStatus { initial, loading, success, error, done }
+enum LoginStatus {
+  initial,
+  loading,
+  success,
+  error,
+  done,
+  loadingToken,
+  successToken,
+  errorToken,
+  doneToken
+}
 
 class LoginState extends Equatable {
   const LoginState({this.login, this.status = LoginStatus.initial});
@@ -25,5 +35,9 @@ extension LoginStateX on LoginState {
   bool get loginInitial => status == LoginStatus.initial;
   bool get loginError => status == LoginStatus.error;
   bool get loginSuccess => status == LoginStatus.success;
-  bool get loginDone => status == LoginStatus.done;
+  bool get loginDone => status == LoginStatus.doneToken;
+  bool get tokenLoading => status == LoginStatus.loadingToken;
+  bool get tokenError => status == LoginStatus.errorToken;
+  bool get tokenSuccess => status == LoginStatus.successToken;
+  bool get tokenDone => status == LoginStatus.doneToken;
 }

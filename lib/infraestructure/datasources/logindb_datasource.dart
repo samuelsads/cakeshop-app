@@ -13,13 +13,36 @@ class LoginDataSourceImpl extends LoginDataSource {
 
   @override
   Future<Login> login(String email, String password) async {
-    final data = {"email": email, "password": password};
+    Login login;
+    try {
+      final data = {"email": email, "password": password};
 
-    final response = await dio.post("/login", data: json.encode(data));
+      final response = await dio.post("/login", data: json.encode(data));
 
-    final loginDbResponse = LoginResponse.fromJson(response.data);
+      final loginDbResponse = LoginResponse.fromJson(response.data);
 
-    Login login = LoginMapper.loginDbEntity(loginDbResponse);
+      login = LoginMapper.loginDbEntity(loginDbResponse);
+    } on DioException catch (e) {
+      login = Login(success: false, token: "");
+    }
+
+    return login;
+  }
+
+  @override
+  Future<Login> verifyToken(String token) async {
+    Login login;
+    try {
+      final response = await dio.get("/login/renew",
+          options: Options(headers: {"x-token": token}));
+
+      final loginDbResponse = LoginResponse.fromJson(response.data);
+
+      login = LoginMapper.loginDbEntity(loginDbResponse);
+    } on DioException catch (e) {
+      login = Login(success: false, token: "");
+    }
+
     return login;
   }
 }

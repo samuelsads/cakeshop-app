@@ -16,7 +16,7 @@ class _MainPageState extends State<MainPage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [Colors.pink.shade100, Colors.pink.shade200])),
-      child: Scaffold(
+      child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(
           child: Text("Main Page"),

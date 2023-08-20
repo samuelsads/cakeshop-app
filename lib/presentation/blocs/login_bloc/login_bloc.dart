@@ -16,6 +16,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
   }
 
+  Future<Login> verifyToken(String token) async {
+    final data = await loginRepository.verifyToken(token);
+    if (data.success) {
+      add(LoginAccessEvent(login: data));
+    }
+
+    return data;
+  }
+
   Future<void> login(String email, String password) async {
     add(const LoginAccessEvent(status: LoginStatus.loading));
     final data = await loginRepository.login(email, password);

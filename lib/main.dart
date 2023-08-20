@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       child: const MaterialApp(
         title: 'Material App',
         debugShowCheckedModeBanner: false,
-        home: LoginPage(),
+        home: LoadingPage(),
       ),
     );
   }

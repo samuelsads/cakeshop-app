@@ -11,4 +11,9 @@ class LoginRepositoryImp extends LoginRepository {
   Future<Login> login(String email, String password) async {
     return await dataSource.login(email, password);
   }
+
+  @override
+  Future<Login> verifyToken(String token) async {
+    return await dataSource.verifyToken(token);
+  }
 }
