@@ -1,4 +1,5 @@
 import 'package:cakeshopapp/config/constants/security_token.dart';
+import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/presentation/animations/slide_route_animation.dart';
 import 'package:cakeshopapp/presentation/blocs/login_bloc/login_bloc.dart';
 import 'package:cakeshopapp/presentation/providers/login_provider.dart';
@@ -35,11 +36,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.pink.shade100, Colors.pink.shade200])),
+      decoration: BoxdecorationCustom.customBoxdecoration(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(

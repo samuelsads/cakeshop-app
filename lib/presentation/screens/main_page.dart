@@ -1,6 +1,7 @@
+import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/presentation/providers/main_page_provider.dart';
 import 'package:cakeshopapp/presentation/screens/cliente_page.dart';
-import 'package:cakeshopapp/presentation/screens/home_page.dart';
+import 'package:cakeshopapp/presentation/screens/orders/order_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,11 +16,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.pink.shade100, Colors.pink.shade200])),
+      decoration: BoxdecorationCustom.customBoxdecoration(),
       child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: _Pages(),
@@ -37,7 +34,7 @@ class _Pages extends StatefulWidget {
 }
 
 class __PagesState extends State<_Pages> {
-  List items = [HomePage(), ClientPage()];
+  List items = [OrdersPage(), ClientPage()];
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
@@ -71,8 +68,8 @@ class __NavigatorState extends State<_Navigator> {
         },
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Inicio",
+              icon: Icon(Icons.check),
+              label: "Ordenes",
               backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: "Clientes")
         ]);

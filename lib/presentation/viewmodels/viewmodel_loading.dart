@@ -12,9 +12,8 @@ class ViewmodelLoading {
       if (!data.success) {
         await SecurityToken.deleteToken();
         return false;
-      } else {
-        SecurityToken().saveToken(data.token);
       }
+      SecurityToken().saveToken(data.token);
 
       return true;
     }
