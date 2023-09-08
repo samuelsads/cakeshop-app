@@ -45,7 +45,7 @@ class _LoadingPageState extends State<LoadingPage> {
       decoration: BoxdecorationCustom.customBoxdecoration(),
       child: const Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(child: CircularProgressIndicator(color: Colors.white)),
+        body: Center(child: CircularProgressIndicator()),
       ),
     );
   }

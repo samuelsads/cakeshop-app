@@ -1,7 +1,10 @@
+import 'package:cakeshopapp/infraestructure/datasources/clientdb_datasource.dart';
 import 'package:cakeshopapp/infraestructure/datasources/logindb_datasource.dart';
 import 'package:cakeshopapp/infraestructure/datasources/orderdb_datasource.dart';
+import 'package:cakeshopapp/infraestructure/repositories/client_repository_impl.dart';
 import 'package:cakeshopapp/infraestructure/repositories/login_repository_impl.dart';
 import 'package:cakeshopapp/infraestructure/repositories/order_repository_impl.dart';
+import 'package:cakeshopapp/presentation/blocs/client_bloc/client_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/login_bloc/login_bloc.dart';
 import 'package:cakeshopapp/presentation/providers/login_provider.dart';
@@ -10,11 +13,11 @@ import 'package:cakeshopapp/presentation/providers/order_provider.dart';
 import 'package:cakeshopapp/presentation/screens/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  initializeDateFormatting();
+  //initializeDateFormatting();
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
       create: (context) =>
@@ -23,6 +26,10 @@ void main() {
     BlocProvider(
       create: (context) =>
           OrderBloc(OrderRepositoryImpl(dataSource: OrderDataSourceImpl())),
+    ),
+    BlocProvider(
+      create: (context) => ClientBloc(
+          ClientRepositoryImpl(dataSource: ClientdbDatasourceImpl())),
     )
   ], child: MyApp()));
 }
@@ -44,6 +51,15 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: const MaterialApp(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('en'), // English
+          Locale('es'), // Spanish
+        ],
         title: 'Material App',
         debugShowCheckedModeBanner: false,
         home: LoadingPage(),

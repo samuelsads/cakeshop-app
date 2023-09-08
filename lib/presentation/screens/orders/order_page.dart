@@ -3,6 +3,7 @@ import 'package:cakeshopapp/domain/entities/total_order.dart';
 import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
 import 'package:cakeshopapp/presentation/providers/order_provider.dart';
 import 'package:cakeshopapp/presentation/screens/orders/order_details_page.dart';
+import 'package:cakeshopapp/presentation/screens/orders/order_new_page.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -67,67 +68,7 @@ class _OrdersPageState extends State<OrdersPage>
           if (state.orderSuccess) {
             List<Order> data = state.order ?? [];
             TotalOrder total = state.total!;
-            return SafeArea(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                        left: 24, right: 24, top: 24, bottom: 24),
-                    width: double.infinity,
-                    height: 200,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        color: Colors.grey.shade50),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(12),
-                          child: const Text(
-                            "Ordenes",
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _TotalCardWidget(
-                              info: total.total,
-                              title: "Total",
-                              width: 80,
-                              height: 100,
-                            ),
-                            _TotalCardWidget(
-                              info: total.today,
-                              title: "Hoy",
-                              width: 80,
-                              height: 100,
-                            ),
-                            _TotalCardWidget(
-                              info: total.tomorrow,
-                              title: "Mañana",
-                              width: 80,
-                              height: 100,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: data.length,
-                      itemBuilder: (context, index) {
-                        final information = data[index];
-                        return _ListItem(information: information);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return _orderBody(total, data);
           }
 
           if (state.orderError) {
@@ -148,7 +89,8 @@ class _OrdersPageState extends State<OrdersPage>
           margin: const EdgeInsets.only(bottom: 8),
           child: FloatingActionButton.extended(
               backgroundColor: Colors.black,
-              onPressed: () {},
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => OrderNewPage())),
               label: Row(
                 children: const [
                   Icon(Icons.add),
@@ -156,6 +98,69 @@ class _OrdersPageState extends State<OrdersPage>
                 ],
               )),
         ),
+      ),
+    );
+  }
+
+  SafeArea _orderBody(TotalOrder total, List<Order> data) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Container(
+            margin:
+                const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 24),
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: Colors.grey.shade50),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.all(12),
+                  child: const Text(
+                    "Ordenes",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _TotalCardWidget(
+                      info: total.total,
+                      title: "Total",
+                      width: 80,
+                      height: 100,
+                    ),
+                    _TotalCardWidget(
+                      info: total.today,
+                      title: "Hoy",
+                      width: 80,
+                      height: 100,
+                    ),
+                    _TotalCardWidget(
+                      info: total.tomorrow,
+                      title: "Mañana",
+                      width: 80,
+                      height: 100,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final information = data[index];
+                return _ListItem(information: information);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -103,6 +103,34 @@ class OrderDetailsPage extends StatelessWidget {
                     width: double.infinity,
                     height: 1,
                     color: Colors.grey),
+                if (order.additionalThings.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 0, bottom: 24),
+                          child: const Text(
+                            "Otros",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Text(
+                          order.additionalThings,
+                          textAlign: TextAlign.justify,
+                          style: const TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (order.additionalThings.isNotEmpty)
+                  Container(
+                      margin: const EdgeInsets.all(16),
+                      width: double.infinity,
+                      height: 1,
+                      color: Colors.grey),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

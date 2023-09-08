@@ -1,11 +1,16 @@
 import 'package:cakeshopapp/domain/entities/client.dart';
 import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/total_order.dart';
+import 'package:cakeshopapp/domain/entities/save.dart';
 import 'package:cakeshopapp/domain/entities/user.dart';
 import 'package:cakeshopapp/infraestructure/models/ordersdb/orderdb_response.dart';
+import 'package:cakeshopapp/infraestructure/models/ordersdb/savedb_response.dart';
 import 'package:cakeshopapp/infraestructure/models/ordersdb/totalorderdo_response.dart';
 
 class OrderMapper {
+  static Save saveDbEntity(SavedbResponse s) =>
+      Save(success: s.success, msg: s.msg);
+
   static Order orderDbEntity(Datum order) => Order(
       description: order.description,
       price: order.price,
@@ -13,6 +18,7 @@ class OrderMapper {
       discount: order.discount ?? 0.0,
       delivered: order.delivered,
       paid: order.paid,
+      additionalThings: order.additionalThings ?? "",
       clientId: Client(
           name: order.clientId.name,
           fatherSurname: order.clientId.fatherSurname,

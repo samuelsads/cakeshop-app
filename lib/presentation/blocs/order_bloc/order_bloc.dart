@@ -16,6 +16,14 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     );
   }
 
+  Future<bool> saveOrder(Map<String, dynamic> data) async {
+    final response = await orderRepository.saveOrder(data);
+    if (response.success) {
+      allOrders(0, 10, false);
+    }
+    return response.success;
+  }
+
   Future<void> allOrders(int start, int limit, bool delivered) async {
     add(const AllOrderEvent(status: OrderStatus.loading));
 
