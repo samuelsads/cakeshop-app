@@ -190,138 +190,97 @@ class _ListItem extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(left: 24, right: 24, top: 8),
         width: double.infinity,
-        height: 170,
+        height: 130,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             color: Colors.grey.shade100),
-        child: Stack(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(
+                  margin: const EdgeInsets.only(left: 12, top: 20, bottom: 0),
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade400,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        information.totalProduct.toString(),
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30),
+                      ),
+                      const Text("Productos",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14))
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(left: 12),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                ViewmodelOrders().formattedDate(
-                                    information.orderDeliveryDate),
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 14, left: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      "${information.clientId.name} ${information.clientId.fatherSurname} ${information.clientId.motherSurname}",
-                                      style: const TextStyle(fontSize: 14)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
                     Container(
-                      margin:
-                          const EdgeInsets.only(right: 12, top: 20, bottom: 10),
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade400,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      margin: const EdgeInsets.only(left: 12, top: 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            information.totalProduct.toString(),
+                            ViewmodelOrders()
+                                .formattedDate(information.orderDeliveryDate),
                             style: const TextStyle(
-                                color: Colors.black,
+                                fontSize: 13,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 30),
+                                color: Colors.red),
                           ),
-                          const Text("Productos",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14))
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 8, left: 13),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  "${information.clientId!.name} ${information.clientId!.fatherSurname} ${information.clientId?.motherSurname ?? ''}",
+                                  style: const TextStyle(fontSize: 14)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 12, top: 8),
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.grey.shade300),
+                      child: Column(
+                        children: [
+                          Text(
+                              NumberFormat.currency(
+                                      symbol: '\$',
+                                      decimalDigits: 2,
+                                      locale: 'es_MX')
+                                  .format(information.price),
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     )
                   ],
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 12, right: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.grey.shade300),
-                        child: Column(
-                          children: [
-                            Text(
-                                NumberFormat.currency(
-                                        symbol: '\$',
-                                        decimalDigits: 2,
-                                        locale: 'es_MX')
-                                    .format(information.price),
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: (information.paid)
-                                    ? Colors.green.shade800
-                                    : (information.advancePayment != 0)
-                                        ? Colors.yellow.shade600
-                                        : Colors.red.shade800),
-                            child: Text(
-                              information.paid
-                                  ? 'Pagado'
-                                  : (information.advancePayment != 0)
-                                      ? "Parcialmente Pagado"
-                                      : 'No pagado',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: (information.paid)
-                                      ? Colors.white
-                                      : (information.advancePayment != 0)
-                                          ? Colors.black
-                                          : Colors.white),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
                 ),
               ],
             ),

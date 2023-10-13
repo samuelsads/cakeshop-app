@@ -9,7 +9,7 @@ import 'package:cakeshopapp/infraestructure/models/ordersdb/totalorderdo_respons
 
 class OrderMapper {
   static Save saveDbEntity(SavedbResponse s) =>
-      Save(success: s.success, msg: s.msg);
+      Save(success: s.success, msg: s.msg, id: s.id ?? "");
 
   static Order orderDbEntity(Datum order) => Order(
       description: order.description,
@@ -25,7 +25,7 @@ class OrderMapper {
           motherSurname: order.clientId.motherSurname ?? "",
           userId: order.clientId.id,
           createdAt: DateTime.now(),
-          uid: ""),
+          uid: order.clientId.id),
       userId: User(
           name: order.userId.name,
           fatherSurname: order.userId.fatherSurname,

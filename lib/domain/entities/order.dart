@@ -9,8 +9,8 @@ class Order {
   String additionalThings;
   bool delivered;
   bool paid;
-  Client clientId;
-  User userId;
+  Client? clientId;
+  User? userId;
   String uid;
   DateTime createdAt;
   double advancePayment;
@@ -25,8 +25,8 @@ class Order {
       required this.additionalThings,
       required this.delivered,
       required this.paid,
-      required this.clientId,
-      required this.userId,
+      this.clientId,
+      this.userId,
       required this.uid,
       required this.createdAt,
       required this.advancePayment,

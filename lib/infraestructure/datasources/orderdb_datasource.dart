@@ -6,6 +6,7 @@ import 'package:cakeshopapp/domain/datasources/order_datasource.dart';
 import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/save.dart';
 import 'package:cakeshopapp/domain/entities/total_order.dart';
+import 'package:cakeshopapp/infraestructure/mappers/basic_mapper.dart';
 import 'package:cakeshopapp/infraestructure/mappers/order_mapper.dart';
 import 'package:cakeshopapp/infraestructure/models/ordersdb/orderdb_response.dart';
 import 'package:cakeshopapp/infraestructure/models/ordersdb/savedb_response.dart';
@@ -76,9 +77,29 @@ class OrderDataSourceImpl extends OrderDataSource {
             'x-token': token,
           }));
       final saveOrderDbResponse = SavedbResponse.fromJson(response.data);
+      save = BasicMapper.saveDbEntity(saveOrderDbResponse);
+    } on DioException catch (e) {
+      save = Save(success: false, msg: "Error", id: "");
+    }
+
+    return save;
+  }
+
+  @override
+  Future<Save> updateOrder(Map<String, dynamic> data) async {
+    Save save;
+    String token = await SecurityToken.getToken();
+
+    try {
+      final response = await dio.patch("/update",
+          data: json.encode(data),
+          options: Options(headers: {
+            'x-token': token,
+          }));
+      final saveOrderDbResponse = SavedbResponse.fromJson(response.data);
       save = OrderMapper.saveDbEntity(saveOrderDbResponse);
     } on DioException catch (e) {
-      save = Save(success: false, msg: "Error");
+      save = Save(success: false, msg: "Error", id: "");
     }
 
     return save;

@@ -1,12 +1,16 @@
+import 'package:cakeshopapp/domain/repositories/payment_repository.dart';
 import 'package:cakeshopapp/infraestructure/datasources/clientdb_datasource.dart';
 import 'package:cakeshopapp/infraestructure/datasources/logindb_datasource.dart';
 import 'package:cakeshopapp/infraestructure/datasources/orderdb_datasource.dart';
+import 'package:cakeshopapp/infraestructure/datasources/paymentdb_datasource_impl.dart';
 import 'package:cakeshopapp/infraestructure/repositories/client_repository_impl.dart';
 import 'package:cakeshopapp/infraestructure/repositories/login_repository_impl.dart';
 import 'package:cakeshopapp/infraestructure/repositories/order_repository_impl.dart';
+import 'package:cakeshopapp/infraestructure/repositories/payment_repository_impl.dart';
 import 'package:cakeshopapp/presentation/blocs/client_bloc/client_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/login_bloc/login_bloc.dart';
+import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
 import 'package:cakeshopapp/presentation/providers/login_provider.dart';
 import 'package:cakeshopapp/presentation/providers/main_page_provider.dart';
 import 'package:cakeshopapp/presentation/providers/order_provider.dart';
@@ -30,6 +34,10 @@ void main() {
     BlocProvider(
       create: (context) => ClientBloc(
           ClientRepositoryImpl(dataSource: ClientdbDatasourceImpl())),
+    ),
+    BlocProvider(
+      create: (context) => PaymentBloc(
+          PaymentRepositoryImpl(dataSource: PaymentDataSourceImp())),
     )
   ], child: MyApp()));
 }

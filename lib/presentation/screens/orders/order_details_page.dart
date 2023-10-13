@@ -1,62 +1,143 @@
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/domain/entities/order.dart';
+import 'package:cakeshopapp/presentation/screens/orders/order_new_page.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-class OrderDetailsPage extends StatelessWidget {
+class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({required this.order, Key? key}) : super(key: key);
 
   final Order order;
 
   @override
+  State<OrderDetailsPage> createState() => _OrderDetailsPageState();
+}
+
+class _OrderDetailsPageState extends State<OrderDetailsPage> {
+  @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors
+          .transparent, // Color transparente para la barra de notificaciones
+    ));
     return Container(
       decoration: BoxdecorationCustom.customBoxdecoration(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            FloatingActionButton(
+                heroTag: 'btn1',
+                backgroundColor: Colors.black,
+                child: const Icon(Icons.attach_money),
+                onPressed: () {}),
+            FloatingActionButton(
+                heroTag: 'btn2',
+                backgroundColor: Colors.black,
+                child: const Icon(Icons.check),
+                onPressed: () {})
+          ],
+        ),
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
             children: [
-              _TopCard(order: order),
-              Container(
-                margin: const EdgeInsets.only(left: 8, right: 8),
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.4,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _CardPayment(money: order.price, title: "Total"),
-                        _CardPayment(
-                            money: order.advancePayment, title: "Anticipo"),
-                        _CardPayment(money: order.discount, title: "Descuento"),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _modalSheetMoreDetails(context);
-                      },
-                      child: Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
-                          child: Text(
-                            order.description,
-                            textAlign: TextAlign.justify,
-                            maxLines: 5,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          )),
-                    ),
-                  ],
+              _TopCard(order: widget.order),
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 0, right: 0),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _DateCard(order: widget.order),
+                      const _LinearWidget(),
+                      Container(
+                        margin: const EdgeInsets.only(
+                            left: 12, right: 12, top: 12, bottom: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Cliente: ",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
+                            Text(
+                                "${widget.order.clientId!.name} ${widget.order.clientId!.fatherSurname} ${widget.order.clientId?.motherSurname ?? ""}",
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                            left: 24, right: 24, top: 12, bottom: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Total de productos: ",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20)),
+                            Text(
+                              widget.order.totalProduct.toString(),
+                              style: const TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _CardPayment(
+                              money: widget.order.price, title: "Total"),
+                          _CardPayment(
+                              money: widget.order.advancePayment,
+                              title: "Anticipo"),
+                          _CardPayment(
+                              money: widget.order.discount, title: "Descuento"),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _modalSheetMoreDetails(context);
+                        },
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            child: Text(
+                              widget.order.description,
+                              textAlign: TextAlign.justify,
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            )),
+                      ),
+                    ],
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -90,7 +171,7 @@ class OrderDetailsPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        order.description,
+                        widget.order.description,
                         textAlign: TextAlign.justify,
                         style: const TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold),
@@ -103,7 +184,7 @@ class OrderDetailsPage extends StatelessWidget {
                     width: double.infinity,
                     height: 1,
                     color: Colors.grey),
-                if (order.additionalThings.isNotEmpty)
+                if (widget.order.additionalThings.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
@@ -117,7 +198,7 @@ class OrderDetailsPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          order.additionalThings,
+                          widget.order.additionalThings,
                           textAlign: TextAlign.justify,
                           style: const TextStyle(
                               fontSize: 18.0, fontWeight: FontWeight.bold),
@@ -125,7 +206,7 @@ class OrderDetailsPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                if (order.additionalThings.isNotEmpty)
+                if (widget.order.additionalThings.isNotEmpty)
                   Container(
                       margin: const EdgeInsets.all(16),
                       width: double.infinity,
@@ -154,7 +235,7 @@ class OrderDetailsPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  "${order.userId.name} ${order.userId.fatherSurname} ${order.userId.motherSurname}",
+                                  "${widget.order.userId!.name} ${widget.order.userId!.fatherSurname} ${widget.order.userId?.motherSurname ?? ''}",
                                   style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold),
@@ -186,7 +267,7 @@ class OrderDetailsPage extends StatelessWidget {
                                 ),
                                 Text(
                                   ViewmodelOrders()
-                                      .formattedDate(order.createdAt),
+                                      .formattedDate(widget.order.createdAt),
                                   style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold),
@@ -204,6 +285,43 @@ class OrderDetailsPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _LinearWidget extends StatelessWidget {
+  const _LinearWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 1,
+      color: Colors.grey,
+    );
+  }
+}
+
+class _DateCard extends StatelessWidget {
+  const _DateCard({
+    super.key,
+    required this.order,
+  });
+
+  final Order order;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      width: MediaQuery.of(context).size.width,
+      child: Text(ViewmodelOrders().formattedDate(order.orderDeliveryDate),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
     );
   }
 }
@@ -260,13 +378,15 @@ class _TopCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          color: Colors.red.shade200, borderRadius: BorderRadius.circular(24)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.5,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
       child: Stack(
         children: [
+          Image.asset("assets/01.jpeg",
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.5),
           Container(
             margin: const EdgeInsets.only(top: 24),
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -282,79 +402,36 @@ class _TopCard extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                       child: Container(
                           height: 50,
-                          color: Colors.transparent,
-                          child: const Icon(Icons.arrow_back)),
+                          width: 50,
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(50)),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          )),
                     ),
                     const Spacer(),
-                    Container(
-                        height: 50,
-                        color: Colors.transparent,
-                        child: const Icon(Icons.edit))
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OrderNewPage(
+                                    update: true,
+                                    orderUpd: order,
+                                  ))),
+                      child: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(50)),
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          )),
+                    )
                   ],
-                ),
-                const Spacer(),
-                // Container(
-                //   child: Text(
-                //       NumberFormat.currency(
-                //               symbol: '\$',
-                //               decimalDigits: 2,
-                //               locale: 'es_MX')
-                //           .format(order.price),
-                //       style: const TextStyle(
-                //           color: Colors.white,
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.bold)),
-                // ),
-                Container(
-                  margin: const EdgeInsets.only(bottom: 24),
-                  child: Text(
-                      ViewmodelOrders().formattedDate(order.orderDeliveryDate),
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold)),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(bottom: 24),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                          "${order.userId.name} ${order.userId.fatherSurname} ${order.userId.motherSurname ?? ""}",
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold)),
-                      Container(
-                        margin: const EdgeInsets.only(
-                            right: 12, top: 0, bottom: 10),
-                        width: 80,
-                        height: 120,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              order.totalProduct.toString(),
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 34),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              child: const Text("Productos",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14)),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),

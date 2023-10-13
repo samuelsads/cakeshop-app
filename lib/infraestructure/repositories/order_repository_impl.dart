@@ -23,4 +23,9 @@ class OrderRepositoryImpl extends OrderRepository {
   Future<Save> saveOrder(Map<String, dynamic> data) async {
     return await dataSource.saveOrder(data);
   }
+
+  @override
+  Future<Save> updateOrder(Map<String, dynamic> data) async {
+    return await dataSource.updateOrder(data);
+  }
 }

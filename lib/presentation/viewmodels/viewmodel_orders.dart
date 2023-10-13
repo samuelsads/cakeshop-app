@@ -1,9 +1,11 @@
+import 'package:cakeshopapp/domain/entities/save.dart';
 import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
 import 'package:intl/intl.dart';
 
 class ViewmodelOrders {
-  Future<bool> saveOrder(Map<String, dynamic> data, OrderBloc bloc) async {
-    return await bloc.saveOrder(data);
+  Future<Save> saveOrder(
+      Map<String, dynamic> data, OrderBloc bloc, bool update) async {
+    return await bloc.saveOrder(data, update);
   }
 
   Future<void> getAllOrders(

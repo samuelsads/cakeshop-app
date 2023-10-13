@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:cakeshopapp/domain/entities/save.dart';
 import 'package:cakeshopapp/domain/entities/total_order.dart';
 import 'package:cakeshopapp/domain/repositories/order_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -16,12 +17,18 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     );
   }
 
-  Future<bool> saveOrder(Map<String, dynamic> data) async {
-    final response = await orderRepository.saveOrder(data);
+  Future<Save> saveOrder(Map<String, dynamic> data, bool update) async {
+    Save response;
+    if (update) {
+      response = await orderRepository.updateOrder(data);
+    } else {
+      response = await orderRepository.saveOrder(data);
+    }
+
     if (response.success) {
       allOrders(0, 10, false);
     }
-    return response.success;
+    return response;
   }
 
   Future<void> allOrders(int start, int limit, bool delivered) async {
