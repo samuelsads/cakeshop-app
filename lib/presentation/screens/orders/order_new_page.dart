@@ -9,6 +9,7 @@ import 'package:cakeshopapp/presentation/viewmodels/viewmodel_loading.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_payment.dart';
 import 'package:cakeshopapp/presentation/widgets/history_of_payment.dart';
+import 'package:cakeshopapp/presentation/widgets/new_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -138,8 +139,8 @@ class _OrderNewPageState extends State<OrderNewPage> {
                             controller: context.select(
                                 (OrderProvider order) => order.pageController),
                             children: [
-                              _NewPayment(widget: widget),
-                              HistoryOfPayment(widget: widget),
+                              NewPayment(order: widget.orderUpd!,update: widget.update!,advancedPaymentController:advancedPaymentController),
+                              HistoryOfPayment(order:widget.orderUpd!),
                             ],
                           ),
                         )
@@ -480,176 +481,6 @@ class _OrderNewPageState extends State<OrderNewPage> {
   }
 }
 
-const List<String> list = <String>['Efectivo', 'Tarjeta'];
-
-class _NewPayment extends StatefulWidget {
-  const _NewPayment({
-    super.key,
-    required this.widget,
-  });
-
-  final OrderNewPage widget;
-
-  @override
-  State<_NewPayment> createState() => _NewPaymentState();
-}
-
-class _NewPaymentState extends State<_NewPayment> {
-  @override
-  void initState() {
-    super.initState();
-    payment = Payment(
-      payment: 0,
-      paymentType: 1,
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String dropdownValue = list.first;
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 200,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomTextFormField(
-            controller: advancedPaymentController,
-            title: "Pago",
-            hint: "0.00",
-            leftMargin: 24,
-            rightMargin: 24,
-            width: MediaQuery.of(context).size.width,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: const Text("Tipo de pago")),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: DropdownButton(
-                      value: dropdownValue,
-                      elevation: 16,
-                      isExpanded: true,
-                      style: const TextStyle(color: Colors.black),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.transparent,
-                      ),
-                      items: list.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? value) {
-                        // This is called when the user selects an item.
-                        setState(() {
-                          dropdownValue = value!;
-                          int position = list.indexOf(dropdownValue);
-                          payment.paymentType = position + 1;
-                        });
-                      }),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(
-                    top: 10,
-                  ),
-                  height: 45,
-                  child: ElevatedButton(
-                      onPressed: () async {
-                        payment.payment =
-                            double.parse(advancedPaymentController.text);
-                        if (widget.widget.update!) {
-                          payment.orderId = widget.widget.orderUpd!.uid;
-
-                          Map<String, dynamic> dataPayment = {
-                            "payment": payment.payment,
-                            "payment_type": payment.paymentType,
-                            "order_id": payment.orderId
-                          };
-                          final responsePayment = await ViewmodelPayment()
-                              .saveOrder(dataPayment,
-                                  BlocProvider.of<PaymentBloc>(context), false);
-                          print(responsePayment);
-
-                          if (!responsePayment.success) {
-                            Toast.show(responsePayment.msg,
-                                duration: Toast.lengthLong,
-                                gravity: Toast.bottom);
-                            return null;
-                          }
-
-                          Map<String, dynamic> data = {
-                            "client_id": client.uid,
-                            "price": priceController.text,
-                            "description": descriptionController.text,
-                            "order_delivery_date": dateDeliveryController.text,
-                            "discount": (discountController.text.isEmpty)
-                                ? "0.0"
-                                : discountController.text,
-                            "additional_things":
-                                (otherThingsController.text.isEmpty)
-                                    ? ""
-                                    : otherThingsController.text,
-                            "paid": false,
-                            "delivered": false,
-                            "advance_payment":
-                                (advancedPaymentController.text.isEmpty &&
-                                        !savePaymentNextSaveOrder)
-                                    ? 0.0
-                                    : advancedPaymentController.text,
-                            "advance_payment_type": 1,
-                            "total_products": numberOfProductController.text,
-                          };
-
-                          data["uid"] = widget.widget.orderUpd!.uid;
-                          data["delivered"] = widget.widget.orderUpd!.delivered;
-
-                          final response = await ViewmodelOrders().saveOrder(
-                              data,
-                              BlocProvider.of(context),
-                              widget.widget.update!);
-
-                          Navigator.popUntil(context, (route) => route.isFirst);
-                        } else {
-                          savePaymentNextSaveOrder = true;
-                          Navigator.pop(context);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: const Color(0xff0073E1),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.save),
-                          Text("Guardar pago")
-                        ],
-                      )),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
 
 class CustomTextFormField extends StatelessWidget {
   CustomTextFormField({

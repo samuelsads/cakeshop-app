@@ -1,3 +1,4 @@
+import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
 import 'package:cakeshopapp/presentation/screens/orders/order_new_page.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
@@ -9,10 +10,10 @@ import 'package:intl/intl.dart';
 class HistoryOfPayment extends StatefulWidget {
   const HistoryOfPayment({
     super.key,
-    required this.widget,
+    required this.order,
   });
 
-  final OrderNewPage widget;
+  final Order order;
 
   @override
   State<HistoryOfPayment> createState() => HistoryOfPaymentState();
@@ -47,7 +48,7 @@ class HistoryOfPaymentState extends State<HistoryOfPayment> {
                                     symbol: '\$',
                                     decimalDigits: 2,
                                     locale: 'es_MX')
-                                .format(widget.widget.orderUpd!.price))),
+                                .format(widget.order.price))),
                       ],
                     ),
                     Column(
@@ -65,7 +66,7 @@ class HistoryOfPaymentState extends State<HistoryOfPayment> {
                                     decimalDigits: 2,
                                     locale: 'es_MX')
                                 .format(
-                                    widget.widget.orderUpd!.price - total))),
+                                    widget.order.price - total))),
                       ],
                     ),
                     Column(

@@ -1,10 +1,17 @@
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/domain/entities/order.dart';
+import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
+import 'package:cakeshopapp/presentation/providers/order_provider.dart';
 import 'package:cakeshopapp/presentation/screens/orders/order_new_page.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
+import 'package:cakeshopapp/presentation/viewmodels/viewmodel_payment.dart';
+import 'package:cakeshopapp/presentation/widgets/history_of_payment.dart';
+import 'package:cakeshopapp/presentation/widgets/new_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({required this.order, Key? key}) : super(key: key);
@@ -14,8 +21,145 @@ class OrderDetailsPage extends StatefulWidget {
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();
 }
+late TextEditingController advancedPaymentController;
+
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    advancedPaymentController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted) {
+          ViewmodelPayment().getAll(
+              widget.order.uid, BlocProvider.of<PaymentBloc>(context));
+        
+      }
+    });
+  }
+
+
+  @override
+  void dispose() {
+    advancedPaymentController.dispose();
+    super.dispose();
+  }
+
+  Future<dynamic> _advancedPayment() async {
+    return showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.5,
+            decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24))),
+            child: Column(
+              children: [
+                Container(
+                    margin: const EdgeInsets.only(top: 24),
+                    child: Column(
+                      children: [
+                        const Text(
+                          "Pagos",
+                          style: TextStyle(fontSize: 24, color: Colors.black),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  
+                                  context.read<OrderProvider>().currentPage = 0;
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: (context.select(
+                                                  (OrderProvider value) =>
+                                                      value.currentPage) ==
+                                              0)
+                                          ? Colors.black
+                                          : Colors.grey.shade200),
+                                  child: Text(
+                                    "Nuevo pago",
+                                    style: TextStyle(
+                                        color: (context.select(
+                                                    (OrderProvider value) =>
+                                                        value.currentPage) ==
+                                                0)
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  context.read<OrderProvider>().currentPage = 1;
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: (context.select(
+                                                  (OrderProvider value) =>
+                                                      value.currentPage) ==
+                                              1)
+                                          ? Colors.black
+                                          : Colors.grey.shade200),
+                                  child: Text(
+                                    "Historial",
+                                    style: TextStyle(
+                                        color: (context.select(
+                                                    (OrderProvider value) =>
+                                                        value.currentPage) ==
+                                                1)
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          width: MediaQuery.of(context).size.width,
+                          child: PageView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            controller: context.select(
+                                (OrderProvider order) => order.pageController),
+                            children: [
+                              NewPayment(order: widget.order, update: true, advancedPaymentController: advancedPaymentController,),
+                              HistoryOfPayment(order: widget.order,),
+                            ],
+                          ),
+                        )
+                      ],
+                    ))
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -34,7 +178,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 heroTag: 'btn1',
                 backgroundColor: Colors.black,
                 child: const Icon(Icons.attach_money),
-                onPressed: () {}),
+                onPressed: () {
+                  context.read<OrderProvider>().changePage(0);
+                  _advancedPayment();
+                }),
             FloatingActionButton(
                 heroTag: 'btn2',
                 backgroundColor: Colors.black,
