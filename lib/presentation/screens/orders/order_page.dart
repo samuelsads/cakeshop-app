@@ -1,6 +1,7 @@
 import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/total_order.dart';
 import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
+import 'package:cakeshopapp/presentation/providers/color_provider.dart';
 import 'package:cakeshopapp/presentation/providers/order_provider.dart';
 import 'package:cakeshopapp/presentation/screens/orders/order_details_page.dart';
 import 'package:cakeshopapp/presentation/screens/orders/order_new_page.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class OrdersPage extends StatefulWidget {
-  OrdersPage({Key? key}) : super(key: key);
+  const OrdersPage({Key? key}) : super(key: key);
 
   @override
   State<OrdersPage> createState() => _OrdersPageState();
@@ -88,13 +89,25 @@ class _OrdersPageState extends State<OrdersPage>
         child: Container(
           margin: const EdgeInsets.only(bottom: 8),
           child: FloatingActionButton.extended(
-              backgroundColor: Colors.black,
-              onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => OrderNewPage())),
+              backgroundColor:
+                  context.select((ColorProvider value) => value.buttonColor),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OrderNewPage())),
               label: Row(
-                children: const [
-                  Icon(Icons.add),
-                  Text("Agregar pedido"),
+                children: [
+                  Icon(
+                    Icons.add,
+                    color: context
+                        .select((ColorProvider value) => value.textButtonColor),
+                  ),
+                  Text(
+                    "Agregar pedido",
+                    style: TextStyle(
+                        color: context.select(
+                            (ColorProvider value) => value.textButtonColor)),
+                  ),
                 ],
               )),
         ),
@@ -172,7 +185,6 @@ class _OrdersPageState extends State<OrdersPage>
 
 class _ListItem extends StatelessWidget {
   const _ListItem({
-    super.key,
     required this.information,
   });
 
@@ -262,8 +274,8 @@ class _ListItem extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 12, top: 8),
-                      padding: EdgeInsets.all(4),
+                      margin: const EdgeInsets.only(left: 12, top: 8),
+                      padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           color: Colors.grey.shade300),
@@ -294,7 +306,6 @@ class _ListItem extends StatelessWidget {
 class _TotalCardWidget extends StatelessWidget {
   const _TotalCardWidget(
       {required this.title,
-      super.key,
       required this.info,
       required this.height,
       required this.width});
@@ -321,7 +332,7 @@ class _TotalCardWidget extends StatelessWidget {
                 fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           Text(
-            " ${info}",
+            " $info",
             style: const TextStyle(
                 fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
           ),

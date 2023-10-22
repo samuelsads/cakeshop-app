@@ -4,12 +4,10 @@ import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/payment.dart';
 import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
 import 'package:cakeshopapp/presentation/delegates/search_client_delegate.dart';
-import 'package:cakeshopapp/presentation/providers/order_provider.dart';
+import 'package:cakeshopapp/presentation/providers/color_provider.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_loading.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_payment.dart';
-import 'package:cakeshopapp/presentation/widgets/history_of_payment.dart';
-import 'package:cakeshopapp/presentation/widgets/new_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -41,119 +39,6 @@ late TextEditingController advancedPayment;
 late Client client;
 
 class _OrderNewPageState extends State<OrderNewPage> {
-  Future<dynamic> _advancedPayment() async {
-    return showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.5,
-            decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24))),
-            child: Column(
-              children: [
-                Container(
-                    margin: const EdgeInsets.only(top: 24),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Pagos",
-                          style: TextStyle(fontSize: 24, color: Colors.black),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  context.read<OrderProvider>().currentPage = 0;
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (context.select(
-                                                  (OrderProvider value) =>
-                                                      value.currentPage) ==
-                                              0)
-                                          ? Colors.black
-                                          : Colors.grey.shade200),
-                                  child: Text(
-                                    "Nuevo pago",
-                                    style: TextStyle(
-                                        color: (context.select(
-                                                    (OrderProvider value) =>
-                                                        value.currentPage) ==
-                                                0)
-                                            ? Colors.white
-                                            : Colors.black),
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  context.read<OrderProvider>().currentPage = 1;
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (context.select(
-                                                  (OrderProvider value) =>
-                                                      value.currentPage) ==
-                                              1)
-                                          ? Colors.black
-                                          : Colors.grey.shade200),
-                                  child: Text(
-                                    "Historial",
-                                    style: TextStyle(
-                                        color: (context.select(
-                                                    (OrderProvider value) =>
-                                                        value.currentPage) ==
-                                                1)
-                                            ? Colors.white
-                                            : Colors.black),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(top: 10),
-                          height: MediaQuery.of(context).size.height * 0.35,
-                          width: MediaQuery.of(context).size.width,
-                          child: PageView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            controller: context.select(
-                                (OrderProvider order) => order.pageController),
-                            children: [
-                              NewPayment(order: widget.orderUpd!,update: widget.update!,advancedPaymentController:advancedPaymentController),
-                              HistoryOfPayment(order:widget.orderUpd!),
-                            ],
-                          ),
-                        )
-                      ],
-                    ))
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   void _dateModal() async {
     DateTime? newBirthday = await showDatePicker(
         context: context,
@@ -192,7 +77,7 @@ class _OrderNewPageState extends State<OrderNewPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (mounted) {
-        ToastContext()..init(context);
+        ToastContext().init(context);
         if (widget.update!) {
           ViewmodelPayment().getAll(
               widget.orderUpd!.uid, BlocProvider.of<PaymentBloc>(context));
@@ -248,7 +133,7 @@ class _OrderNewPageState extends State<OrderNewPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxdecorationCustom.customBoxdecoration(),
+      decoration: BoxdecorationCustom.customBoxdecoration(context),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -273,9 +158,11 @@ class _OrderNewPageState extends State<OrderNewPage> {
                   margin: const EdgeInsets.only(top: 0),
                   width: double.infinity,
                   alignment: Alignment.center,
-                  child: const Text(
+                  child: Text(
                     "Agregar orden",
                     style: TextStyle(
+                      color: context
+                          .select((ColorProvider value) => value.buttonColor),
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
@@ -326,10 +213,7 @@ class _OrderNewPageState extends State<OrderNewPage> {
                         leftMargin: 4,
                         rightMargin: 24,
                         width: 90,
-                        onTap: () {
-                          context.read<OrderProvider>().changePage(0);
-                          _advancedPayment();
-                        },
+                        onTap: () {},
                       ),
                     ],
                   ),
@@ -459,16 +343,24 @@ class _OrderNewPageState extends State<OrderNewPage> {
                       },
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          backgroundColor: const Color(0xff0073E1),
+                          backgroundColor: context.select(
+                              (ColorProvider value) => value.buttonColor),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16))),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.save),
-                          Text((widget.update!)
-                              ? "Actualizar pedido"
-                              : "Guardar pedido")
+                          Icon(Icons.save,
+                              color: context.select((ColorProvider value) =>
+                                  value.textButtonColor)),
+                          Text(
+                            (widget.update!)
+                                ? "Actualizar pedido"
+                                : "Guardar pedido",
+                            style: TextStyle(
+                                color: context.select((ColorProvider value) =>
+                                    value.textButtonColor)),
+                          )
                         ],
                       )),
                 )
@@ -481,16 +373,15 @@ class _OrderNewPageState extends State<OrderNewPage> {
   }
 }
 
-
 class CustomTextFormField extends StatelessWidget {
-  CustomTextFormField({
+  const CustomTextFormField({
     required this.hint,
     required this.leftMargin,
     required this.rightMargin,
     required this.width,
     required this.controller,
     required this.title,
-    this.onTap = null,
+    this.onTap,
     this.maxLines = 1,
     this.enabled = true,
     this.textInput = TextInputType.number,
@@ -521,8 +412,11 @@ class CustomTextFormField extends StatelessWidget {
                 width: width,
                 child: Text(
                   title,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: context.select(
+                          (ColorProvider value) => value.textButtonColor),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
                 )),
             Container(
               width: width,

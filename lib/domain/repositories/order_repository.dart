@@ -10,4 +10,6 @@ abstract class OrderRepository {
   Future<Save> saveOrder(Map<String, dynamic> data);
 
   Future<Save> updateOrder(Map<String, dynamic> data);
+
+  Future<Save> updateOrderStatus(String uuid);
 }

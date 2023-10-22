@@ -1,4 +1,5 @@
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
+import 'package:cakeshopapp/presentation/providers/color_provider.dart';
 import 'package:cakeshopapp/presentation/providers/main_page_provider.dart';
 import 'package:cakeshopapp/presentation/screens/cliente_page.dart';
 import 'package:cakeshopapp/presentation/screens/orders/order_page.dart';
@@ -16,7 +17,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxdecorationCustom.customBoxdecoration(),
+      decoration: BoxdecorationCustom.customBoxdecoration(context),
       child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: _Pages(),
@@ -34,7 +35,7 @@ class _Pages extends StatefulWidget {
 }
 
 class __PagesState extends State<_Pages> {
-  List items = [OrdersPage(), ClientPage()];
+  List items = [const OrdersPage(), const ClientPage()];
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
@@ -59,8 +60,12 @@ class __NavigatorState extends State<_Navigator> {
   Widget build(BuildContext context) {
     final provider = context.read<MainPageProvider>();
     return BottomNavigationBar(
-        backgroundColor: Colors.black,
-        unselectedItemColor: Colors.white,
+        backgroundColor:
+            context.select((ColorProvider value) => value.buttonColor),
+        unselectedItemColor:
+            context.select((ColorProvider value) => value.textButtonColor),
+        selectedItemColor:
+            context.select((ColorProvider value) => value.textButtonColor),
         currentIndex:
             context.select((MainPageProvider value) => value.currentPage),
         onTap: (i) {

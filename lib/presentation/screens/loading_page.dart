@@ -42,7 +42,7 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxdecorationCustom.customBoxdecoration(),
+      decoration: BoxdecorationCustom.customBoxdecoration(context),
       child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(child: CircularProgressIndicator()),

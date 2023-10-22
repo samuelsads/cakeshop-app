@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/save.dart';
 import 'package:cakeshopapp/domain/entities/total_order.dart';
 import 'package:cakeshopapp/domain/repositories/order_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:cakeshopapp/domain/entities/order.dart';
+
 part 'order_event.dart';
 part 'order_state.dart';
 
@@ -15,6 +16,12 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       (event, emit) => emit(state.copyWith(
           order: event.order, status: event.status, total: event.total)),
     );
+  }
+
+  Future<Save> updateDelivered(String uuid) async {
+    Save response;
+    response = await orderRepository.updateOrderStatus(uuid);
+    return response;
   }
 
   Future<Save> saveOrder(Map<String, dynamic> data, bool update) async {

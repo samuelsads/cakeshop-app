@@ -1,17 +1,18 @@
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
+import 'package:cakeshopapp/presentation/providers/color_provider.dart';
 import 'package:cakeshopapp/presentation/providers/order_provider.dart';
 import 'package:cakeshopapp/presentation/screens/orders/order_new_page.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_payment.dart';
+import 'package:cakeshopapp/presentation/widgets/done_order_widget.dart';
 import 'package:cakeshopapp/presentation/widgets/history_of_payment.dart';
 import 'package:cakeshopapp/presentation/widgets/new_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({required this.order, Key? key}) : super(key: key);
@@ -21,29 +22,51 @@ class OrderDetailsPage extends StatefulWidget {
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();
 }
+
 late TextEditingController advancedPaymentController;
 
-
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
-
   @override
   void initState() {
     super.initState();
     advancedPaymentController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (mounted) {
-          ViewmodelPayment().getAll(
-              widget.order.uid, BlocProvider.of<PaymentBloc>(context));
-        
+        ViewmodelPayment()
+            .getAll(widget.order.uid, BlocProvider.of<PaymentBloc>(context));
       }
     });
   }
-
 
   @override
   void dispose() {
     advancedPaymentController.dispose();
     super.dispose();
+  }
+
+  Future<dynamic> _doneOrder() async {
+    return showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.5,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24))),
+              child: DoneOrderWidget(
+                uuid: widget.order.uid,
+              )),
+        );
+      },
+    );
   }
 
   Future<dynamic> _advancedPayment() async {
@@ -80,7 +103,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  
                                   context.read<OrderProvider>().currentPage = 0;
                                 },
                                 child: Container(
@@ -145,8 +167,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             controller: context.select(
                                 (OrderProvider order) => order.pageController),
                             children: [
-                              NewPayment(order: widget.order, update: true, advancedPaymentController: advancedPaymentController,),
-                              HistoryOfPayment(order: widget.order,),
+                              NewPayment(
+                                order: widget.order,
+                                update: true,
+                                advancedPaymentController:
+                                    advancedPaymentController,
+                              ),
+                              HistoryOfPayment(
+                                order: widget.order,
+                              ),
                             ],
                           ),
                         )
@@ -167,7 +196,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           .transparent, // Color transparente para la barra de notificaciones
     ));
     return Container(
-      decoration: BoxdecorationCustom.customBoxdecoration(),
+      decoration: BoxdecorationCustom.customBoxdecoration(context),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -186,10 +215,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 heroTag: 'btn2',
                 backgroundColor: Colors.black,
                 child: const Icon(Icons.check),
-                onPressed: () {})
+                onPressed: () => _doneOrder())
           ],
         ),
-        body: Container(
+        body: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
@@ -200,9 +229,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   margin: const EdgeInsets.only(left: 0, right: 0),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.7,
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                      color: context
+                          .select((ColorProvider value) => value.buttonColor),
+                      borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(24),
                           topRight: Radius.circular(24))),
                   child: Column(
@@ -437,9 +467,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 }
 
 class _LinearWidget extends StatelessWidget {
-  const _LinearWidget({
-    super.key,
-  });
+  const _LinearWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -453,7 +481,6 @@ class _LinearWidget extends StatelessWidget {
 
 class _DateCard extends StatelessWidget {
   const _DateCard({
-    super.key,
     required this.order,
   });
 
@@ -475,7 +502,6 @@ class _DateCard extends StatelessWidget {
 
 class _CardPayment extends StatelessWidget {
   const _CardPayment({
-    super.key,
     required this.money,
     required this.title,
   });
@@ -516,7 +542,6 @@ class _CardPayment extends StatelessWidget {
 
 class _TopCard extends StatelessWidget {
   const _TopCard({
-    super.key,
     required this.order,
   });
 

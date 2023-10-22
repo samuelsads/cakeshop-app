@@ -29,7 +29,7 @@ class OrderDataSourceImpl extends OrderDataSource {
 
       final orderDbResponse = OrdersDbResponse.fromJson(response.data);
 
-      order = orderDbResponse.data
+      order = (orderDbResponse.data ?? [])
           .map((e) => OrderMapper.orderDbEntity(e))
           .toList();
     } on DioException catch (e) {
@@ -53,7 +53,7 @@ class OrderDataSourceImpl extends OrderDataSource {
       final totalOrderDbResponse = TotalOrderDbResponse.fromJson(response.data);
 
       total = OrderMapper.totalOrderDbEntity(totalOrderDbResponse);
-    } on DioException catch (e) {
+    } on DioException {
       total = TotalOrder(
           success: false,
           today: 0,
@@ -78,7 +78,7 @@ class OrderDataSourceImpl extends OrderDataSource {
           }));
       final saveOrderDbResponse = SavedbResponse.fromJson(response.data);
       save = BasicMapper.saveDbEntity(saveOrderDbResponse);
-    } on DioException catch (e) {
+    } on DioException {
       save = Save(success: false, msg: "Error", id: "");
     }
 
@@ -98,7 +98,27 @@ class OrderDataSourceImpl extends OrderDataSource {
           }));
       final saveOrderDbResponse = SavedbResponse.fromJson(response.data);
       save = OrderMapper.saveDbEntity(saveOrderDbResponse);
-    } on DioException catch (e) {
+    } on DioException {
+      save = Save(success: false, msg: "Error", id: "");
+    }
+
+    return save;
+  }
+
+  @override
+  Future<Save> updateOrderStatus(String uuid) async {
+    Map<String, dynamic> data = {"uid": uuid};
+    Save save;
+    String token = await SecurityToken.getToken();
+    try {
+      final response = await dio.patch("/delivered",
+          data: json.encode(data),
+          options: Options(headers: {
+            'x-token': token,
+          }));
+      final saveOrderDbResponse = SavedbResponse.fromJson(response.data);
+      save = OrderMapper.saveDbEntity(saveOrderDbResponse);
+    } on DioException {
       save = Save(success: false, msg: "Error", id: "");
     }
 

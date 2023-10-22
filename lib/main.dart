@@ -1,4 +1,4 @@
-import 'package:cakeshopapp/domain/repositories/payment_repository.dart';
+import 'package:cakeshopapp/config/sharepreferences/color_preference.dart';
 import 'package:cakeshopapp/infraestructure/datasources/clientdb_datasource.dart';
 import 'package:cakeshopapp/infraestructure/datasources/logindb_datasource.dart';
 import 'package:cakeshopapp/infraestructure/datasources/orderdb_datasource.dart';
@@ -8,20 +8,24 @@ import 'package:cakeshopapp/infraestructure/repositories/login_repository_impl.d
 import 'package:cakeshopapp/infraestructure/repositories/order_repository_impl.dart';
 import 'package:cakeshopapp/infraestructure/repositories/payment_repository_impl.dart';
 import 'package:cakeshopapp/presentation/blocs/client_bloc/client_bloc.dart';
-import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/login_bloc/login_bloc.dart';
+import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
+import 'package:cakeshopapp/presentation/providers/color_provider.dart';
 import 'package:cakeshopapp/presentation/providers/login_provider.dart';
 import 'package:cakeshopapp/presentation/providers/main_page_provider.dart';
 import 'package:cakeshopapp/presentation/providers/order_provider.dart';
 import 'package:cakeshopapp/presentation/screens/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   //initializeDateFormatting();
+  WidgetsFlutterBinding.ensureInitialized();
+  await ColorPreference().initPrefs();
+  ColorPreference().primaryColor = 1;
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
       create: (context) =>
@@ -39,14 +43,19 @@ void main() {
       create: (context) => PaymentBloc(
           PaymentRepositoryImpl(dataSource: PaymentDataSourceImp())),
     )
-  ], child: MyApp()));
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (context) => ColorProvider(),
+        ),
         ChangeNotifierProvider(
           create: (_) => OrderProvider(),
         ),

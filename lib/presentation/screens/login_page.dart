@@ -2,7 +2,6 @@ import 'package:cakeshopapp/config/constants/security_token.dart';
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/presentation/animations/slide_route_animation.dart';
 import 'package:cakeshopapp/presentation/blocs/login_bloc/login_bloc.dart';
-import 'package:cakeshopapp/presentation/providers/login_provider.dart';
 import 'package:cakeshopapp/presentation/screens/main_page.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_login.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxdecorationCustom.customBoxdecoration(),
+      decoration: BoxdecorationCustom.customBoxdecoration(context),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(

@@ -4,6 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/domain/entities/client.dart';
 import 'package:cakeshopapp/presentation/blocs/client_bloc/client_bloc.dart';
+import 'package:cakeshopapp/presentation/providers/color_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,22 +53,25 @@ class SearchClientDelegate extends SearchDelegate<Client?> {
     return Container(
       width: double.infinity,
       height: MediaQuery.of(context).size.height,
-      decoration: BoxdecorationCustom.customBoxdecoration(),
+      decoration: BoxdecorationCustom.customBoxdecoration(context),
       child: BlocBuilder<ClientBloc, ClientState>(
         builder: (context, state) {
           if (state.searchLoading) {
             return Container(
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height,
-                decoration: BoxdecorationCustom.customBoxdecoration(),
+                decoration: BoxdecorationCustom.customBoxdecoration(context),
                 child: Center(
                     child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
-                    CircularProgressIndicator(),
+                  children: [
+                    const CircularProgressIndicator(),
                     Text("Buscando información...",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold))
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: context.select(
+                                (ColorProvider value) => value.buttonColor)))
                   ],
                 )));
           } else if (state.searchSuccess) {
@@ -110,12 +114,18 @@ class SearchClientDelegate extends SearchDelegate<Client?> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.search_off, size: 38),
+                        Icon(Icons.search_off,
+                            size: 38,
+                            color: context.select(
+                                (ColorProvider value) => value.buttonColor)),
                         Text(
                           "No se encontraron resultados para la busqueda $query",
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: context.select(
+                                  (ColorProvider value) => value.buttonColor)),
                         ),
                       ],
                     )),

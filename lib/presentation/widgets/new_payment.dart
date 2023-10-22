@@ -1,5 +1,3 @@
-
-
 import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/payment.dart';
 import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
@@ -13,12 +11,11 @@ import 'package:toast/toast.dart';
 const List<String> list = <String>['Efectivo', 'Tarjeta'];
 
 class NewPayment extends StatefulWidget {
-  const NewPayment({
-    super.key,
-    required this.order,
-    required this.update,
-    required this.advancedPaymentController
-  });
+  const NewPayment(
+      {super.key,
+      required this.order,
+      required this.update,
+      required this.advancedPaymentController});
 
   final Order order;
   final bool update;
@@ -36,6 +33,12 @@ class NewPaymentState extends State<NewPayment> {
       payment: 0,
       paymentType: 1,
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted) {
+        ToastContext().init(context);
+      }
+    });
   }
 
   @override
@@ -123,39 +126,27 @@ class NewPaymentState extends State<NewPayment> {
                             Toast.show(responsePayment.msg,
                                 duration: Toast.lengthLong,
                                 gravity: Toast.bottom);
-                            return null;
+                            return;
                           }
 
                           Map<String, dynamic> data = {
-                            "client_id": client.uid,
-                            "price": priceController.text,
-                            "description": descriptionController.text,
-                            "order_delivery_date": dateDeliveryController.text,
-                            "discount": (discountController.text.isEmpty)
-                                ? "0.0"
-                                : discountController.text,
-                            "additional_things":
-                                (otherThingsController.text.isEmpty)
-                                    ? ""
-                                    : otherThingsController.text,
-                            "paid": false,
-                            "delivered": false,
-                            "advance_payment":
-                                (widget.advancedPaymentController.text.isEmpty &&
-                                        !savePaymentNextSaveOrder)
-                                    ? 0.0
-                                    : widget.advancedPaymentController.text,
+                            "uid": widget.order.uid,
+                            "client_id": widget.order.clientId,
+                            "price": widget.order.price,
+                            "description": widget.order.description,
+                            "order_delivery_date":
+                                widget.order.orderDeliveryDate.toString(),
+                            "discount": widget.order.discount,
+                            "additional_things": widget.order.additionalThings,
+                            "paid": widget.order.paid,
+                            "delivered": widget.order.delivered,
+                            "advance_payment": widget.order.advancePayment,
                             "advance_payment_type": 1,
-                            "total_products": numberOfProductController.text,
+                            "total_products": widget.order.totalProduct,
                           };
 
-                          data["uid"] = widget.order.uid;
-                          data["delivered"] = widget.order.delivered;
-
-                          final response = await ViewmodelOrders().saveOrder(
-                              data,
-                              BlocProvider.of(context),
-                              widget.update);
+                          final response = await ViewmodelOrders()
+                              .saveOrder(data, BlocProvider.of(context), true);
 
                           Navigator.popUntil(context, (route) => route.isFirst);
                         } else {
@@ -170,8 +161,8 @@ class NewPaymentState extends State<NewPayment> {
                               borderRadius: BorderRadius.circular(16))),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.save),
+                        children: const [
+                          Icon(Icons.save),
                           Text("Guardar pago")
                         ],
                       )),
