@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
+import 'package:cakeshopapp/config/theme/custom_styles.dart';
 import 'package:cakeshopapp/domain/entities/client.dart';
 import 'package:cakeshopapp/presentation/blocs/client_bloc/client_bloc.dart';
 import 'package:cakeshopapp/presentation/providers/color_provider.dart';
@@ -121,11 +122,8 @@ class SearchClientDelegate extends SearchDelegate<Client?> {
                         Text(
                           "No se encontraron resultados para la busqueda $query",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: context.select(
-                                  (ColorProvider value) => value.buttonColor)),
+                          style: CustomStyles.dontHaveResult(context.select(
+                              (ColorProvider value) => value.buttonColor)),
                         ),
                       ],
                     )),

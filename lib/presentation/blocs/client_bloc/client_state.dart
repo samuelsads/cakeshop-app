@@ -23,13 +23,13 @@ class ClientState extends Equatable {
       this.search,
       this.searchStatus = SearchStatus.initial});
 
-  final Client? client;
+  final List<Client>? client;
   final ClientStatus status;
   final List<Client>? search;
   final SearchStatus searchStatus;
 
   ClientState copyWith(
-          {Client? client,
+          {List<Client>? client,
           ClientStatus? status,
           List<Client>? search,
           SearchStatus? searchStatus}) =>

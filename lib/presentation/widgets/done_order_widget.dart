@@ -2,8 +2,10 @@ import 'package:cakeshopapp/config/theme/custom_styles.dart';
 import 'package:cakeshopapp/config/theme/margins.dart';
 import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
+import 'package:cakeshopapp/presentation/widgets/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toast/toast.dart';
 
 class DoneOrderWidget extends StatefulWidget {
   const DoneOrderWidget({required this.uuid, super.key});
@@ -15,6 +17,16 @@ class DoneOrderWidget extends StatefulWidget {
 }
 
 class _DoneOrderWidgetState extends State<DoneOrderWidget> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted) {
+        ToastContext().init(context);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -33,9 +45,18 @@ class _DoneOrderWidgetState extends State<DoneOrderWidget> {
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
                 onPressed: () async {
+                  waitingToFinish(context);
                   final data = await ViewmodelOrders().updateOrderDelivered(
                       widget.uuid, BlocProvider.of<OrderBloc>(context));
-                  print(data.msg);
+                  if (mounted) Navigator.pop(context);
+                  Toast.show(data.msg,
+                      duration: Toast.lengthLong, gravity: Toast.bottom);
+
+                  await ViewmodelOrders()
+                      .getAllOrders(0, 10, false, BlocProvider.of(context));
+                  if (mounted) {
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  }
                 },
                 child: const Text("Finalizar"))),
         Container(

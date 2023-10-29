@@ -4,6 +4,8 @@ import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
 import 'package:cakeshopapp/presentation/screens/orders/order_new_page.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_payment.dart';
+import 'package:cakeshopapp/presentation/widgets/global/custom_text_form_field.dart';
+import 'package:cakeshopapp/presentation/widgets/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toast/toast.dart';
@@ -58,6 +60,7 @@ class NewPaymentState extends State<NewPayment> {
         children: [
           CustomTextFormField(
             controller: widget.advancedPaymentController,
+            enabled: (widget.order.paid) ? false : true,
             title: "Pago",
             hint: "0.00",
             leftMargin: 24,
@@ -106,54 +109,64 @@ class NewPaymentState extends State<NewPayment> {
                   ),
                   height: 45,
                   child: ElevatedButton(
-                      onPressed: () async {
-                        payment.payment =
-                            double.parse(widget.advancedPaymentController.text);
-                        if (widget.update) {
-                          payment.orderId = widget.order.uid;
+                      onPressed: (widget.order.paid)
+                          ? null
+                          : () async {
+                              payment.payment = double.parse(
+                                  widget.advancedPaymentController.text);
+                              if (widget.update) {
+                                waitingToFinish(context);
+                                payment.orderId = widget.order.uid;
 
-                          Map<String, dynamic> dataPayment = {
-                            "payment": payment.payment,
-                            "payment_type": payment.paymentType,
-                            "order_id": payment.orderId
-                          };
-                          final responsePayment = await ViewmodelPayment()
-                              .saveOrder(dataPayment,
-                                  BlocProvider.of<PaymentBloc>(context), false);
-                          print(responsePayment);
+                                Map<String, dynamic> dataPayment = {
+                                  "payment": payment.payment,
+                                  "payment_type": payment.paymentType,
+                                  "order_id": payment.orderId
+                                };
+                                final responsePayment = await ViewmodelPayment()
+                                    .saveOrder(
+                                        dataPayment,
+                                        BlocProvider.of<PaymentBloc>(context),
+                                        false);
 
-                          if (!responsePayment.success) {
-                            Toast.show(responsePayment.msg,
-                                duration: Toast.lengthLong,
-                                gravity: Toast.bottom);
-                            return;
-                          }
+                                if (!responsePayment.success) {
+                                  Toast.show(responsePayment.msg,
+                                      duration: Toast.lengthLong,
+                                      gravity: Toast.bottom);
+                                  if (mounted) Navigator.pop(context);
+                                  return;
+                                }
 
-                          Map<String, dynamic> data = {
-                            "uid": widget.order.uid,
-                            "client_id": widget.order.clientId,
-                            "price": widget.order.price,
-                            "description": widget.order.description,
-                            "order_delivery_date":
-                                widget.order.orderDeliveryDate.toString(),
-                            "discount": widget.order.discount,
-                            "additional_things": widget.order.additionalThings,
-                            "paid": widget.order.paid,
-                            "delivered": widget.order.delivered,
-                            "advance_payment": widget.order.advancePayment,
-                            "advance_payment_type": 1,
-                            "total_products": widget.order.totalProduct,
-                          };
+                                Map<String, dynamic> data = {
+                                  "uid": widget.order.uid,
+                                  "client_id": widget.order.clientId!.uid,
+                                  "price": widget.order.price,
+                                  "description": widget.order.description,
+                                  "order_delivery_date":
+                                      widget.order.orderDeliveryDate.toString(),
+                                  "discount": widget.order.discount,
+                                  "additional_things":
+                                      widget.order.additionalThings,
+                                  "paid": widget.order.paid,
+                                  "delivered": widget.order.delivered,
+                                  "advance_payment":
+                                      widget.order.advancePayment,
+                                  "advance_payment_type": 1,
+                                  "total_products": widget.order.totalProduct,
+                                };
 
-                          final response = await ViewmodelOrders()
-                              .saveOrder(data, BlocProvider.of(context), true);
+                                await ViewmodelOrders().saveOrder(
+                                    data, BlocProvider.of(context), true);
 
-                          Navigator.popUntil(context, (route) => route.isFirst);
-                        } else {
-                          savePaymentNextSaveOrder = true;
-                          Navigator.pop(context);
-                        }
-                      },
+                                if (mounted) {
+                                  Navigator.popUntil(
+                                      context, (route) => route.isFirst);
+                                }
+                              } else {
+                                savePaymentNextSaveOrder = true;
+                                Navigator.pop(context);
+                              }
+                            },
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
                           backgroundColor: const Color(0xff0073E1),

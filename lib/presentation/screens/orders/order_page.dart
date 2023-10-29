@@ -1,3 +1,5 @@
+import 'package:cakeshopapp/config/theme/custom_styles.dart';
+import 'package:cakeshopapp/config/theme/margins.dart';
 import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/total_order.dart';
 import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
@@ -69,7 +71,24 @@ class _OrdersPageState extends State<OrdersPage>
           if (state.orderSuccess) {
             List<Order> data = state.order ?? [];
             TotalOrder total = state.total!;
-            return _orderBody(total, data);
+            return (total.total > 0 && data.isNotEmpty)
+                ? _orderBody(total, data)
+                : Container(
+                    margin: const EdgeInsets.only(
+                        left: Margins.MARGIN_LEFT, right: Margins.MARING_RIGHT),
+                    child: Center(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "No cuenta con ordenes pendientes para mostrar",
+                          textAlign: TextAlign.center,
+                          style: CustomStyles.dontHaveResult(context.select(
+                              (ColorProvider value) => value.buttonColor)),
+                        )
+                      ],
+                    )),
+                  );
           }
 
           if (state.orderError) {
@@ -86,31 +105,34 @@ class _OrdersPageState extends State<OrdersPage>
         duration: const Duration(milliseconds: 300),
         opacity:
             (context.select((OrderProvider value) => value.downOrUp)) ? 0 : 1,
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: FloatingActionButton.extended(
-              backgroundColor:
-                  context.select((ColorProvider value) => value.buttonColor),
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const OrderNewPage())),
-              label: Row(
-                children: [
-                  Icon(
-                    Icons.add,
-                    color: context
-                        .select((ColorProvider value) => value.textButtonColor),
-                  ),
-                  Text(
-                    "Agregar pedido",
-                    style: TextStyle(
-                        color: context.select(
-                            (ColorProvider value) => value.textButtonColor)),
-                  ),
-                ],
-              )),
-        ),
+        child: (context.select((OrderProvider value) => value.downOrUp))
+            ? const SizedBox.shrink()
+            : Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: FloatingActionButton.extended(
+                    heroTag: "btn-order",
+                    backgroundColor: context
+                        .select((ColorProvider value) => value.buttonColor),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const OrderNewPage())),
+                    label: Row(
+                      children: [
+                        Icon(
+                          Icons.add,
+                          color: context.select(
+                              (ColorProvider value) => value.textButtonColor),
+                        ),
+                        Text(
+                          "Agregar pedido",
+                          style: TextStyle(
+                              color: context.select((ColorProvider value) =>
+                                  value.textButtonColor)),
+                        ),
+                      ],
+                    )),
+              ),
       ),
     );
   }
@@ -120,8 +142,11 @@ class _OrdersPageState extends State<OrdersPage>
       child: Column(
         children: [
           Container(
-            margin:
-                const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 24),
+            margin: const EdgeInsets.only(
+                left: Margins.MARGIN_LEFT,
+                right: Margins.MARING_RIGHT,
+                top: 24,
+                bottom: 24),
             width: double.infinity,
             height: 200,
             decoration: BoxDecoration(
@@ -200,7 +225,8 @@ class _ListItem extends StatelessWidget {
                 builder: (context) => OrderDetailsPage(order: information)));
       },
       child: Container(
-        margin: const EdgeInsets.only(left: 24, right: 24, top: 8),
+        margin: const EdgeInsets.only(
+            left: Margins.MARGIN_LEFT, right: Margins.MARING_RIGHT, top: 8),
         width: double.infinity,
         height: 130,
         decoration: BoxDecoration(
@@ -249,10 +275,8 @@ class _ListItem extends StatelessWidget {
                           Text(
                             ViewmodelOrders()
                                 .formattedDate(information.orderDeliveryDate),
-                            style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red),
+                            style: CustomStyles.text12W500(context.select(
+                                (ColorProvider value) => value.textDateColor)),
                           ),
                         ],
                       ),
@@ -267,7 +291,9 @@ class _ListItem extends StatelessWidget {
                             children: [
                               Text(
                                   "${information.clientId!.name} ${information.clientId!.fatherSurname} ${information.clientId?.motherSurname ?? ''}",
-                                  style: const TextStyle(fontSize: 14)),
+                                  style: CustomStyles.text14W400(context.select(
+                                      (ColorProvider value) =>
+                                          value.textColor))),
                             ],
                           ),
                         ],

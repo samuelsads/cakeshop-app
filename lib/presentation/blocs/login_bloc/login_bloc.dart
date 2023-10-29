@@ -30,7 +30,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final data = await loginRepository.login(email, password);
     if (!data.success) {
       add(const LoginAccessEvent(status: LoginStatus.error));
+    } else {
+      add(LoginAccessEvent(login: data, status: LoginStatus.success));
     }
-    add(LoginAccessEvent(login: data, status: LoginStatus.success));
   }
 }

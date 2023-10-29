@@ -7,6 +7,13 @@ abstract class ClientEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class AllClientsEvent extends ClientEvent {
+  final List<Client>? client;
+  final ClientStatus? status;
+
+  const AllClientsEvent({this.client, this.status = ClientStatus.initial});
+}
+
 class SearchClientEvent extends ClientEvent {
   final List<Client>? search;
   final SearchStatus searchStatus;

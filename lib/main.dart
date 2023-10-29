@@ -11,6 +11,7 @@ import 'package:cakeshopapp/presentation/blocs/client_bloc/client_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/login_bloc/login_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/order_bloc/order_bloc.dart';
 import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
+import 'package:cakeshopapp/presentation/providers/client_provider.dart';
 import 'package:cakeshopapp/presentation/providers/color_provider.dart';
 import 'package:cakeshopapp/presentation/providers/login_provider.dart';
 import 'package:cakeshopapp/presentation/providers/main_page_provider.dart';
@@ -25,6 +26,7 @@ void main() async {
   //initializeDateFormatting();
   WidgetsFlutterBinding.ensureInitialized();
   await ColorPreference().initPrefs();
+
   ColorPreference().primaryColor = 1;
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
@@ -58,6 +60,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => OrderProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ClientProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => MainPageProvider(),

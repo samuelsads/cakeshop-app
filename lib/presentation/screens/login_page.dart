@@ -6,6 +6,7 @@ import 'package:cakeshopapp/presentation/screens/main_page.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toast/toast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -23,6 +24,11 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     email = TextEditingController();
     password = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted) {
+        ToastContext().init(context);
+      }
+    });
   }
 
   @override
@@ -170,6 +176,17 @@ class _LoginPageState extends State<LoginPage> {
                           context,
                           SlideRoute(page: const MainPage()),
                           (Route<dynamic> route) => false);
+                    });
+                  }
+
+                  if (state.loginError) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      if (mounted) {
+                        Toast.show(
+                            "Error al iniciar sesión, verique sus credenciales",
+                            duration: Toast.lengthLong,
+                            gravity: Toast.bottom);
+                      }
                     });
                   }
 

@@ -10,6 +10,18 @@ List<Color> buttonsColor = [Colors.black, Colors.white];
 
 List<Color> textButtonColors = [Colors.white, Colors.black];
 
+List<Color> textColors = [
+  Colors.black,
+  Colors.black,
+];
+
+List<Color> textColors1 = [
+  Colors.black,
+  Colors.white,
+];
+
+List<Color> textDateColors = [Colors.red, Colors.red];
+
 class ColorProvider extends ChangeNotifier {
   List<Color> _backgroundColor = data[ColorPreference().primaryColor];
 
@@ -17,17 +29,52 @@ class ColorProvider extends ChangeNotifier {
 
   Color _textButtonColor = textButtonColors[ColorPreference().primaryColor];
 
+  Color _textColor = textColors[ColorPreference().primaryColor];
+
+  Color _textColor1 = textColors1[ColorPreference().primaryColor];
+
+  Color _textDateColor = textDateColors[ColorPreference().primaryColor];
+
+  Color get textDateColor => _textDateColor;
+
+  Color get textColor1 => _textColor1;
+
+  void changeTextColor1(int position) {
+    ColorPreference().primaryColor = position;
+
+    _textColor1 = textColors1[ColorPreference().primaryColor];
+    notifyListeners();
+  }
+
+  void changeTextDateColor(int position) {
+    ColorPreference().primaryColor = position;
+
+    _textDateColor = textDateColors[ColorPreference().primaryColor];
+    notifyListeners();
+  }
+
   Color get textButtonColor => _textButtonColor;
 
+  Color get textColor => _textColor;
+
+  void changeTextColor(int position) {
+    ColorPreference().primaryColor = position;
+
+    _textColor = textColors[ColorPreference().primaryColor];
+    notifyListeners();
+  }
+
   void changeTextButtonColor(int position) {
-    _textButtonColor = textButtonColors[position];
+    ColorPreference().primaryColor = position;
+    _textButtonColor = textButtonColors[ColorPreference().primaryColor];
     notifyListeners();
   }
 
   Color get buttonColor => _buttonColor;
 
   void changeButtonColor(int position) {
-    _buttonColor = buttonsColor[position];
+    ColorPreference().primaryColor = position;
+    _buttonColor = buttonsColor[ColorPreference().primaryColor];
     notifyListeners();
   }
 

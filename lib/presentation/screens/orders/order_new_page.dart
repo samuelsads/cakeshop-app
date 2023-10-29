@@ -1,13 +1,15 @@
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
+import 'package:cakeshopapp/config/theme/custom_styles.dart';
 import 'package:cakeshopapp/domain/entities/client.dart';
 import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/payment.dart';
 import 'package:cakeshopapp/presentation/blocs/payment_bloc/payment_bloc.dart';
 import 'package:cakeshopapp/presentation/delegates/search_client_delegate.dart';
 import 'package:cakeshopapp/presentation/providers/color_provider.dart';
-import 'package:cakeshopapp/presentation/viewmodels/viewmodel_loading.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_orders.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_payment.dart';
+import 'package:cakeshopapp/presentation/widgets/global/custom_text_form_field.dart';
+import 'package:cakeshopapp/presentation/widgets/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -160,12 +162,8 @@ class _OrderNewPageState extends State<OrderNewPage> {
                   alignment: Alignment.center,
                   child: Text(
                     "Agregar orden",
-                    style: TextStyle(
-                      color: context
-                          .select((ColorProvider value) => value.buttonColor),
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: CustomStyles.text20W500(context
+                        .select((ColorProvider value) => value.textColor)),
                   ),
                 ),
                 Container(
@@ -288,7 +286,7 @@ class _OrderNewPageState extends State<OrderNewPage> {
                             numberOfProductController.text.isNotEmpty &&
                             dateDeliveryController.text.isNotEmpty &&
                             descriptionController.text.isNotEmpty) {
-                          ViewmodelLoading().waitingToFinishing(context);
+                          waitingToFinish(context);
 
                           Map<String, dynamic> data = {
                             "client_id": client.uid,
@@ -320,21 +318,6 @@ class _OrderNewPageState extends State<OrderNewPage> {
 
                           final response = await ViewmodelOrders().saveOrder(
                               data, BlocProvider.of(context), widget.update!);
-                          await ViewmodelOrders().getAllOrders(
-                              0, 10, false, BlocProvider.of(context));
-
-                          if (savePaymentNextSaveOrder) {
-                            payment.orderId = response.id;
-
-                            Map<String, dynamic> dataPayment = {
-                              "payment": payment.payment,
-                              "payment_type": payment.paymentType,
-                              "order_id": payment.orderId
-                            };
-                            await ViewmodelPayment().saveOrder(dataPayment,
-                                BlocProvider.of<PaymentBloc>(context), false);
-                            //GUARDAR el pago
-                          }
 
                           Navigator.popUntil(context, (route) => route.isFirst);
                         } else {
@@ -367,75 +350,6 @@ class _OrderNewPageState extends State<OrderNewPage> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField({
-    required this.hint,
-    required this.leftMargin,
-    required this.rightMargin,
-    required this.width,
-    required this.controller,
-    required this.title,
-    this.onTap,
-    this.maxLines = 1,
-    this.enabled = true,
-    this.textInput = TextInputType.number,
-    super.key,
-  });
-  final String title;
-  final String hint;
-  final double leftMargin;
-  final double rightMargin;
-  final double width;
-  final TextEditingController controller;
-  final Function()? onTap;
-  final TextInputType? textInput;
-  final bool enabled;
-  final int? maxLines;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(left: leftMargin, right: rightMargin),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-                margin: const EdgeInsets.only(left: 10, bottom: 4),
-                width: width,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                      color: context.select(
-                          (ColorProvider value) => value.textButtonColor),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                )),
-            Container(
-              width: width,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(16)),
-              child: TextFormField(
-                enabled: enabled,
-                controller: controller,
-                keyboardType: textInput,
-                maxLines: maxLines,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.only(left: 10),
-                    hintText: hint,
-                    hintMaxLines: maxLines,
-                    hintStyle: const TextStyle(fontSize: 14)),
-              ),
-            ),
-          ],
         ),
       ),
     );
