@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 OrdersDbResponse ordersDbResponseFromJson(String str) =>
     OrdersDbResponse.fromJson(json.decode(str));
@@ -10,12 +9,12 @@ String ordersDbResponseToJson(OrdersDbResponse data) =>
 class OrdersDbResponse {
   final bool success;
   final String? msg;
-  final List<Datum> data;
+  final List<Datum>? data;
 
   OrdersDbResponse({
     required this.success,
     this.msg,
-    required this.data,
+    this.data,
   });
 
   factory OrdersDbResponse.fromJson(Map<String, dynamic> json) =>
@@ -28,7 +27,7 @@ class OrdersDbResponse {
   Map<String, dynamic> toJson() => {
         "success": success,
         "msg": msg,
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "data": List<dynamic>.from((data ?? []).map((x) => x.toJson())),
       };
 }
 
