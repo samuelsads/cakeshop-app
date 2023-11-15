@@ -52,8 +52,12 @@ class _ClientPageState extends State<ClientPage>
         await showSearch(context: context, delegate: SearchClientDelegate());
     if (data != null) {
       if (mounted) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const ClientDetailsPage()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ClientDetailsPage(
+                      client: data,
+                    )));
       }
     }
   }
@@ -187,47 +191,57 @@ class _ItemClient extends StatelessWidget {
   final Client client;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 60,
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      margin: const EdgeInsets.only(
-          left: Margins.MARGIN_LEFT, right: Margins.MARING_RIGHT, top: 12),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24), color: Colors.grey.shade100),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-              margin: const EdgeInsets.only(
-                  left: Margins.MARGIN_LEFT, right: Margins.MARING_RIGHT),
-              child: Text(
-                "${client.name} ${client.fatherSurname} ${client.motherSurname}",
-                style: CustomStyles.text14W400(
-                    context.select((ColorProvider value) => value.textColor)),
-              )),
-          Container(
-              margin: const EdgeInsets.only(
-                  left: Margins.MARGIN_LEFT,
-                  right: Margins.MARING_RIGHT,
-                  top: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Registrado desde el: ",
-                    style: CustomStyles.text12W500(context
-                        .select((ColorProvider value) => value.textColor)),
-                  ),
-                  Text(
-                    ViewmodelOrders().formattedDate(client.createdAt),
-                    style: CustomStyles.text12W500(context
-                        .select((ColorProvider value) => value.textDateColor)),
-                  ),
-                ],
-              )),
-        ],
+    return GestureDetector(
+      onTap: () {
+        context.read<ClientProvider>().isLoading = false;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ClientDetailsPage(client: client)));
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 60,
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.only(
+            left: Margins.MARGIN_LEFT, right: Margins.MARING_RIGHT, top: 12),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.grey.shade100),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+                margin: const EdgeInsets.only(
+                    left: Margins.MARGIN_LEFT, right: Margins.MARING_RIGHT),
+                child: Text(
+                  "${client.name} ${client.fatherSurname} ${client.motherSurname}",
+                  style: CustomStyles.text14W400(
+                      context.select((ColorProvider value) => value.textColor)),
+                )),
+            Container(
+                margin: const EdgeInsets.only(
+                    left: Margins.MARGIN_LEFT,
+                    right: Margins.MARING_RIGHT,
+                    top: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Registrado desde el: ",
+                      style: CustomStyles.text12W500(context
+                          .select((ColorProvider value) => value.textColor)),
+                    ),
+                    Text(
+                      ViewmodelOrders().formattedDate(client.createdAt),
+                      style: CustomStyles.text12W500(context.select(
+                          (ColorProvider value) => value.textDateColor)),
+                    ),
+                  ],
+                )),
+          ],
+        ),
       ),
     );
   }

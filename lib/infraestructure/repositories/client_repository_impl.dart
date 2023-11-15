@@ -1,5 +1,6 @@
 import 'package:cakeshopapp/domain/datasources/client_datasource.dart';
 import 'package:cakeshopapp/domain/entities/client.dart';
+import 'package:cakeshopapp/domain/entities/cliente_details.dart';
 import 'package:cakeshopapp/domain/entities/save.dart';
 import 'package:cakeshopapp/domain/repositories/client_repository.dart';
 
@@ -20,4 +21,14 @@ class ClientRepositoryImpl extends ClientRepository {
   @override
   Future<Save> save(Map<String, dynamic> data) async =>
       await dataSource.save(data);
+
+  @override
+  Future<List<ClientDetails>> clientDetails(String clientId) async {
+    return await dataSource.clientDetails(clientId);
+  }
+
+  @override
+  Future<Save> update(Map<String, dynamic> data) async {
+    return await dataSource.update(data);
+  }
 }

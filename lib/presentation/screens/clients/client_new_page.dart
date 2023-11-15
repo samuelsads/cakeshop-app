@@ -1,6 +1,8 @@
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/config/theme/custom_styles.dart';
 import 'package:cakeshopapp/config/theme/margins.dart';
+import 'package:cakeshopapp/domain/entities/client.dart';
+import 'package:cakeshopapp/domain/entities/save.dart';
 import 'package:cakeshopapp/presentation/blocs/client_bloc/client_bloc.dart';
 import 'package:cakeshopapp/presentation/providers/color_provider.dart';
 import 'package:cakeshopapp/presentation/viewmodels/viewmodel_client.dart';
@@ -10,8 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toast/toast.dart';
 
 class ClienteNewPage extends StatefulWidget {
-  const ClienteNewPage({super.key});
-
+  const ClienteNewPage({this.update = false, this.clientUpd, super.key});
+  final bool? update;
+  final Client? clientUpd;
   @override
   State<ClienteNewPage> createState() => _ClienteNewPageState();
 }
@@ -28,6 +31,7 @@ class _ClienteNewPageState extends State<ClienteNewPage> {
     name = TextEditingController();
     fatherSurname = TextEditingController();
     motherSurname = TextEditingController();
+    updateClient();
   }
 
   @override
@@ -36,6 +40,14 @@ class _ClienteNewPageState extends State<ClienteNewPage> {
     fatherSurname.dispose();
     motherSurname.dispose();
     super.dispose();
+  }
+
+  void updateClient() {
+    if (widget.update!) {
+      name.text = widget.clientUpd?.name ?? "";
+      fatherSurname.text = widget.clientUpd?.fatherSurname ?? "";
+      motherSurname.text = widget.clientUpd?.motherSurname ?? "";
+    }
   }
 
   @override
@@ -66,7 +78,9 @@ class _ClienteNewPageState extends State<ClienteNewPage> {
                   width: double.infinity,
                   alignment: Alignment.center,
                   child: Text(
-                    "Agregar cliente",
+                    (widget.update ?? false)
+                        ? "Actualizar cliente"
+                        : "Agregar cliente",
                     style: CustomStyles.text20W500(context
                         .select((ColorProvider value) => value.textColor)),
                   )),
@@ -110,15 +124,28 @@ class _ClienteNewPageState extends State<ClienteNewPage> {
                       Map<String, dynamic> data = {
                         "name": name.text,
                         "father_surname": fatherSurname.text,
-                        "mother:surname": motherSurname.text
+                        "mother_surname": motherSurname.text
                       };
-
-                      final response = await ViewmodelClient().saveOrder(
-                          data, BlocProvider.of<ClientBloc>(context), false);
+                      Save response;
+                      if (widget.update ?? false) {
+                        data["uid"] = widget.clientUpd!.uid;
+                        response = await ViewmodelClient().saveOrder(
+                            data, BlocProvider.of<ClientBloc>(context), true);
+                      } else {
+                        response = await ViewmodelClient().saveOrder(
+                            data, BlocProvider.of<ClientBloc>(context), false);
+                      }
 
                       Toast.show(response.msg,
                           duration: Toast.lengthLong, gravity: Toast.bottom);
-                      if (mounted) Navigator.pop(context);
+                      if (widget.update ?? false) {
+                        if (mounted) {
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                        }
+                      } else {
+                        if (mounted) Navigator.pop(context);
+                      }
+
                       return;
                     },
                     style: ElevatedButton.styleFrom(
@@ -134,7 +161,9 @@ class _ClienteNewPageState extends State<ClienteNewPage> {
                             color: context.select((ColorProvider value) =>
                                 value.textButtonColor)),
                         Text(
-                          "Guardar cliente",
+                          (widget.update ?? false)
+                              ? "Actualizar cliente"
+                              : "Guardar cliente",
                           style: TextStyle(
                               color: context.select((ColorProvider value) =>
                                   value.textButtonColor)),

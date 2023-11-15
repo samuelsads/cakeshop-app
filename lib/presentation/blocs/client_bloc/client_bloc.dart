@@ -25,7 +25,7 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
     Save response;
     if (update) {
       //update
-      response = await clientRepository.save(data);
+      response = await clientRepository.update(data);
     } else {
       response = await clientRepository.save(data);
     }

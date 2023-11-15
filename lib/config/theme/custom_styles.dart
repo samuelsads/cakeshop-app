@@ -19,6 +19,9 @@ class CustomStyles {
   static TextStyle text20W500(Color color) =>
       TextStyle(fontSize: 20, color: color, fontWeight: FontWeight.w500);
 
+  static TextStyle text24W800(Color color) =>
+      TextStyle(fontSize: 24, color: color, fontWeight: FontWeight.w800);
+
   static TextStyle text12W500(Color color) =>
       TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w500);
 
