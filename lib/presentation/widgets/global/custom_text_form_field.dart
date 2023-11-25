@@ -54,10 +54,14 @@ class CustomTextFormField extends StatelessWidget {
                 enabled: enabled,
                 controller: controller,
                 keyboardType: textInput,
+                textAlign: TextAlign.justify,
                 maxLines: maxLines,
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.only(left: 10),
+                    contentPadding: EdgeInsets.only(
+                        left: 10,
+                        top: ((maxLines ?? 0) > 1) ? 10 : 0,
+                        right: 10),
                     hintText: hint,
                     hintMaxLines: maxLines,
                     hintStyle: const TextStyle(fontSize: 14)),

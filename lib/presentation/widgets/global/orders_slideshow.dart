@@ -18,10 +18,14 @@ class OrdersSlideshow extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.4,
+      height: MediaQuery.of(context).size.height * 0.45,
       child: Swiper(
         itemCount: data.length,
         viewportFraction: 0.8,
+        pagination: const SwiperPagination(
+            margin: EdgeInsets.only(top: 10),
+            builder: DotSwiperPaginationBuilder(
+                activeColor: Colors.white, color: Colors.black)),
         duration: 2000,
         scale: 0.9,
         autoplay: true,

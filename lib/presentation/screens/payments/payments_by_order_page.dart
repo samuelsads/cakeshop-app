@@ -35,42 +35,44 @@ class PaymentsByOrderPage extends StatelessWidget {
                 },
               ),
             ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              color: Colors.transparent,
-              margin: const EdgeInsets.only(
-                  top: 24,
-                  left: Margins.MARGIN_LEFT,
-                  right: Margins.MARING_RIGHT),
-              child: Stack(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 50,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "PAGOS",
-                      style: CustomStyles.text20W500(context
-                          .select((ColorProvider value) => value.textColor)),
+            SafeArea(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                color: Colors.transparent,
+                margin: const EdgeInsets.only(
+                    top: 24,
+                    left: Margins.MARGIN_LEFT,
+                    right: Margins.MARING_RIGHT),
+                child: Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "PAGOS",
+                        style: CustomStyles.text20W500(context
+                            .select((ColorProvider value) => value.textColor)),
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      context.read<ClientProvider>().isLoading = true;
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(50)),
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        )),
-                  ),
-                ],
+                    GestureDetector(
+                      onTap: () {
+                        context.read<ClientProvider>().isLoading = true;
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(50)),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          )),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

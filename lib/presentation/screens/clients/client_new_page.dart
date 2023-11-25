@@ -121,6 +121,13 @@ class _ClienteNewPageState extends State<ClienteNewPage> {
                     top: 24),
                 child: ElevatedButton(
                     onPressed: () async {
+                      if (name.text.isEmpty && fatherSurname.text.isEmpty) {
+                        Toast.show(
+                            "Campos vacios, asegurese haber llenado todos los campos.",
+                            duration: Toast.lengthLong,
+                            gravity: Toast.bottom);
+                        return;
+                      }
                       Map<String, dynamic> data = {
                         "name": name.text,
                         "father_surname": fatherSurname.text,

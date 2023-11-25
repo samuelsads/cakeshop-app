@@ -1,5 +1,6 @@
 import 'package:cakeshopapp/config/theme/boxdecoration_custom.dart';
 import 'package:cakeshopapp/config/theme/custom_styles.dart';
+import 'package:cakeshopapp/config/theme/margins.dart';
 import 'package:cakeshopapp/domain/entities/client.dart';
 import 'package:cakeshopapp/domain/entities/order.dart';
 import 'package:cakeshopapp/domain/entities/payment.dart';
@@ -30,14 +31,12 @@ class OrderNewPage extends StatefulWidget {
 }
 
 late TextEditingController priceController;
-late TextEditingController discountController;
 late TextEditingController advancedPaymentController;
 late TextEditingController numberOfProductController;
 late TextEditingController dateDeliveryController;
 late TextEditingController otherThingsController;
 late TextEditingController descriptionController;
 late TextEditingController clientController;
-late TextEditingController advancedPayment;
 late Client client;
 
 class _OrderNewPageState extends State<OrderNewPage> {
@@ -88,14 +87,12 @@ class _OrderNewPageState extends State<OrderNewPage> {
     });
 
     priceController = TextEditingController();
-    discountController = TextEditingController();
     advancedPaymentController = TextEditingController();
     numberOfProductController = TextEditingController();
     dateDeliveryController = TextEditingController();
     otherThingsController = TextEditingController();
     descriptionController = TextEditingController();
     clientController = TextEditingController();
-    advancedPayment = TextEditingController();
 
     editOrder();
   }
@@ -103,8 +100,7 @@ class _OrderNewPageState extends State<OrderNewPage> {
   void editOrder() {
     if (widget.update!) {
       priceController.text = (widget.orderUpd?.price ?? 0).toString();
-      discountController.text = (widget.orderUpd?.discount ?? 0).toString();
-      advancedPayment.text = (widget.orderUpd?.advancePayment ?? 0).toString();
+
       numberOfProductController.text =
           (widget.orderUpd?.totalProduct ?? 0).toString();
       dateDeliveryController.text = DateFormat('yyyy/MM/dd')
@@ -121,14 +117,12 @@ class _OrderNewPageState extends State<OrderNewPage> {
   @override
   void dispose() {
     priceController.dispose();
-    discountController.dispose();
     advancedPaymentController.dispose();
     numberOfProductController.dispose();
     dateDeliveryController.dispose();
     otherThingsController.dispose();
     descriptionController.dispose();
     clientController.dispose();
-    advancedPayment.dispose();
     super.dispose();
   }
 
@@ -172,46 +166,35 @@ class _OrderNewPageState extends State<OrderNewPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CustomTextFormField(
-                          controller: clientController,
-                          title: "Cliente",
-                          hint: "Buscar cliente",
-                          enabled: false,
-                          leftMargin: 24,
-                          rightMargin: 24,
-                          width: MediaQuery.of(context).size.width * 0.84,
-                          onTap: _showSearch),
+                      Flexible(
+                        child: CustomTextFormField(
+                            controller: clientController,
+                            title: "Cliente",
+                            hint: "Buscar cliente",
+                            enabled: false,
+                            leftMargin: Margins.MARGIN_LEFT,
+                            rightMargin: Margins.MARING_RIGHT,
+                            width: MediaQuery.of(context).size.width,
+                            onTap: _showSearch),
+                      ),
                     ],
                   ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 12),
+                  width: MediaQuery.of(context).size.width,
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      CustomTextFormField(
-                          controller: priceController,
-                          title: "Precio",
-                          hint: "0.00",
-                          leftMargin: 24,
-                          rightMargin: 4,
-                          width: 90),
-                      CustomTextFormField(
-                          controller: discountController,
-                          title: "Descuento",
-                          hint: "0.00",
-                          leftMargin: 4,
-                          rightMargin: 4,
-                          width: 90),
-                      CustomTextFormField(
-                        controller: advancedPayment,
-                        enabled: false,
-                        title: "Abono",
-                        hint: "0.00",
-                        leftMargin: 4,
-                        rightMargin: 24,
-                        width: 90,
-                        onTap: () {},
+                      Flexible(
+                        child: CustomTextFormField(
+                            controller: priceController,
+                            title: "Precio",
+                            hint: "0.00",
+                            leftMargin: Margins.MARGIN_LEFT,
+                            rightMargin: Margins.MARING_RIGHT,
+                            width: MediaQuery.of(context).size.width),
                       ),
                     ],
                   ),
@@ -250,6 +233,7 @@ class _OrderNewPageState extends State<OrderNewPage> {
                     children: [
                       CustomTextFormField(
                           controller: otherThingsController,
+                          textInput: TextInputType.text,
                           title: "Adicionales",
                           hint: "Bases de madera, fuentes u otros objetos",
                           leftMargin: 24,
@@ -266,6 +250,7 @@ class _OrderNewPageState extends State<OrderNewPage> {
                     children: [
                       CustomTextFormField(
                         controller: descriptionController,
+                        textInput: TextInputType.text,
                         title: "Descripción",
                         hint:
                             "Pastel grande de 2 pisos redondo de color azul, etc...",
@@ -293,20 +278,14 @@ class _OrderNewPageState extends State<OrderNewPage> {
                             "price": priceController.text,
                             "description": descriptionController.text,
                             "order_delivery_date": dateDeliveryController.text,
-                            "discount": (discountController.text.isEmpty)
-                                ? "0.0"
-                                : discountController.text,
+                            "discount": 0.0,
                             "additional_things":
                                 (otherThingsController.text.isEmpty)
                                     ? ""
                                     : otherThingsController.text,
                             "paid": false,
                             "delivered": false,
-                            "advance_payment":
-                                (advancedPaymentController.text.isEmpty &&
-                                        !savePaymentNextSaveOrder)
-                                    ? 0.0
-                                    : advancedPaymentController.text,
+                            "advance_payment": 0.0,
                             "advance_payment_type": 1,
                             "total_products": numberOfProductController.text,
                           };

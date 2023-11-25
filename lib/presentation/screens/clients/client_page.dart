@@ -221,10 +221,7 @@ class _ItemClient extends StatelessWidget {
                       context.select((ColorProvider value) => value.textColor)),
                 )),
             Container(
-                margin: const EdgeInsets.only(
-                    left: Margins.MARGIN_LEFT,
-                    right: Margins.MARING_RIGHT,
-                    top: 8),
+                margin: const EdgeInsets.only(top: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

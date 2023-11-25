@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({Key? key}) : super(key: key);
@@ -81,7 +82,7 @@ class _OrdersPageState extends State<OrdersPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "No cuenta con ordenes pendientes para mostrar",
+                          "No cuenta con pedidos pendientes para mostrar",
                           textAlign: TextAlign.center,
                           style: CustomStyles.dontHaveResult(context.select(
                               (ColorProvider value) => value.buttonColor)),
@@ -148,39 +149,27 @@ class _OrdersPageState extends State<OrdersPage>
                 top: 24,
                 bottom: 24),
             width: double.infinity,
-            height: 200,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                color: Colors.grey.shade50),
+              borderRadius: BorderRadius.circular(24),
+            ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  margin: const EdgeInsets.all(12),
-                  child: const Text(
-                    "Ordenes",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    "Pedidos",
+                    style: CustomStyles.text20W500(
+                        Provider.of<ColorProvider>(context).textColor),
                   ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _TotalCardWidget(
-                      info: total.total,
-                      title: "Total",
-                      width: 80,
-                      height: 100,
-                    ),
-                    _TotalCardWidget(
                       info: total.today,
-                      title: "Hoy",
-                      width: 80,
-                      height: 100,
-                    ),
-                    _TotalCardWidget(
-                      info: total.tomorrow,
-                      title: "Mañana",
-                      width: 80,
+                      title: "Pedidos para hoy",
+                      width: 150,
                       height: 100,
                     ),
                   ],
@@ -345,22 +334,22 @@ class _TotalCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      height: height,
       margin: const EdgeInsets.only(top: 0, right: 12, left: 12),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24), color: Colors.black),
+        borderRadius: BorderRadius.circular(24),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            title,
-            style: const TextStyle(
-                fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+            " $info",
+            style: CustomStyles.text24W800(
+                context.select((ColorProvider value) => value.textColor)),
           ),
           Text(
-            " $info",
-            style: const TextStyle(
-                fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
+            title,
+            style: CustomStyles.text12W500(
+                context.select((ColorProvider value) => value.textColor)),
           ),
         ],
       ),

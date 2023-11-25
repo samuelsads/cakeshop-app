@@ -60,103 +60,107 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
                                 (ColorProvider value) => value.textColor)),
                           ),
                         )
-                      : Container(
-                          margin: const EdgeInsets.only(
-                            top: 24,
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          color: Colors.transparent,
-                          child: Column(
-                            children: [
-                              Container(
-                                  margin: const EdgeInsets.only(
-                                      top: 24,
-                                      left: Margins.MARGIN_LEFT,
-                                      right: Margins.MARING_RIGHT),
-                                  child: Text(
-                                    widget.details.length.toString(),
-                                    style: CustomStyles.text24W800(
-                                        context.select((ColorProvider value) =>
-                                            value.textColor)),
-                                  )),
-                              Container(
+                      : SafeArea(
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                              top: 24,
+                            ),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            color: Colors.transparent,
+                            child: Column(
+                              children: [
+                                Container(
+                                    margin: const EdgeInsets.only(
+                                        top: 24,
+                                        left: Margins.MARGIN_LEFT,
+                                        right: Margins.MARING_RIGHT),
+                                    child: Text(
+                                      widget.details.length.toString(),
+                                      style: CustomStyles.text24W800(context
+                                          .select((ColorProvider value) =>
+                                              value.textColor)),
+                                    )),
+                                Container(
+                                    margin: const EdgeInsets.only(
+                                        top: 8,
+                                        left: Margins.MARGIN_LEFT,
+                                        right: Margins.MARING_RIGHT),
+                                    child: Text(
+                                      "Pedidos realizados",
+                                      style: CustomStyles.text12W500(context
+                                          .select((ColorProvider value) =>
+                                              value.textColor)),
+                                    )),
+                                Container(
                                   margin: const EdgeInsets.only(
                                       top: 8,
                                       left: Margins.MARGIN_LEFT,
                                       right: Margins.MARING_RIGHT),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.white),
                                   child: Text(
-                                    "Pedidos realizados",
-                                    style: CustomStyles.text12W500(
-                                        context.select((ColorProvider value) =>
-                                            value.textColor)),
-                                  )),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 8,
-                                    left: Margins.MARGIN_LEFT,
-                                    right: Margins.MARING_RIGHT),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Colors.white),
-                                child: Text(
-                                    "Total ${NumberFormat.currency(symbol: '\$', decimalDigits: 2, locale: 'es_MX').format(ViewmodelClient().totalClient(widget.details))}",
-                                    style: CustomStyles.text12W500(
-                                        context.select((ColorProvider value) =>
-                                            value.textColor))),
-                              ),
-                              _PieChart(widget.details),
-                              OrdersSlideshow(data: widget.details)
-                            ],
+                                      "Total ${NumberFormat.currency(symbol: '\$', decimalDigits: 2, locale: 'es_MX').format(ViewmodelClient().totalClient(widget.details))}",
+                                      style: CustomStyles.text12W500(context
+                                          .select((ColorProvider value) =>
+                                              value.textColor))),
+                                ),
+                                _PieChart(widget.details),
+                                OrdersSlideshow(data: widget.details)
+                              ],
+                            ),
                           ),
                         ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: const EdgeInsets.only(
-                        top: 24,
-                        left: Margins.MARGIN_LEFT,
-                        right: Margins.MARING_RIGHT),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            context.read<ClientProvider>().isLoading = true;
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.4),
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: const Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                              )),
-                        ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ClienteNewPage(
-                                        clientUpd: widget.client,
-                                        update: true,
-                                      ))),
-                          child: Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.4),
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: const Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                              )),
-                        )
-                      ],
+                  SafeArea(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(
+                          top: 24,
+                          left: Margins.MARGIN_LEFT,
+                          right: Margins.MARING_RIGHT),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              context.read<ClientProvider>().isLoading = true;
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.4),
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: const Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.white,
+                                )),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ClienteNewPage(
+                                          clientUpd: widget.client,
+                                          update: true,
+                                        ))),
+                            child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.4),
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: const Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                )),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],

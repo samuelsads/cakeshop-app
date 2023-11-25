@@ -75,7 +75,7 @@ class __NavigatorState extends State<_Navigator> {
         items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.check),
-              label: "Ordenes",
+              label: "Pedidos",
               backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: "Clientes")
         ]);
