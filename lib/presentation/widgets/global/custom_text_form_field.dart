@@ -44,7 +44,7 @@ class CustomTextFormField extends StatelessWidget {
                   child: Text(
                     title,
                     style: CustomStyles.text14W800(context
-                        .select((ColorProvider value) => value.textColor1)),
+                        .select((ColorProvider value) => value.textColor)),
                   )),
             Container(
               width: width,
